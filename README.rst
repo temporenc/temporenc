@@ -69,7 +69,7 @@ four components:
   This component contains hour, minute, and second information, each part
   optional.
 
-* **Sub-second* precision** (``S``)
+* **Sub-second precision** (``S``)
 
   This is a refinement to the time component that allows for a more precise time
   representation.
@@ -195,7 +195,7 @@ hour, minute         18:25    ``10010``  ``110100`` ``111111``
 Sub-second precision time component
 -----------------------------------
 
-Sub-second time precision is expressed as either milliseconds (ms), microsecond
+Sub-second time precision is expressed as either milliseconds (ms), microseconds
 (µs), or nanoseconds (ns). All numbers are represented as a multiple of 8 bits
 (i.e. whole bytes), with specific padding bits on the left that indicate the
 precision in use.
