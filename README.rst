@@ -195,16 +195,38 @@ hour, minute         18:25    ``10010``  ``110100`` ``111111``
 Sub-second precision time component
 -----------------------------------
 
-TODO
+Sub-second time precision is expressed as either milliseconds (ms), microsecond
+(µs), or nanoseconds (ns). All numbers are represented as a multiple of 8 bits
+(i.e. whole bytes), with specific padding bits on the left that indicate the
+precision in use.
 
-expressed as either milliseconds (ms), microsecond (µs), or nanoseconds (ns)
+* **Milliseconds** (10 bits, padded to 16 bits)
 
-* Sub-second time precision is encoded using either 10, 20, or 30 bits, depending
-  on the precision used:
+  An integer between 0-999 (both inclusive). The padding is ``000000``.
 
-  * Millisecond: 10 bits
-  * Microsecond: 20 bits
-  * Nanosecond: 30 bits
+* **Microseconds** (20 bits, padded to 24 bits)
+
+  An integer between 0-999999 (both inclusive). The padding is ``0100``.
+
+* **Milliseconds** (30 bits, padded to 32 bits)
+
+  An integer between 0-999999999 (both inclusive). The padding is ``10``.
+
+The resulting bytes look like this:
+
+========= ====== ======= ============ ============ ============ ============
+Precision Size   Size    Byte 1       Byte 2       Byte 3       Byte 4
+          (bits) (bytes)
+========= ====== ======= ============ ============ ============ ============
+ms        16     2       ``000000xx`` ``xxxxxxxx``
+µs        24     3       ``0100xxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+ns        32     4       ``10xxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+none      8      1       ``11111111``
+========= ====== ======= ============ ============ ============ ============
+
+In case no value is present, a single ``0xff`` byte is used instead. Note that
+in practice it's often a better choice to simply use a *temporenc* type that
+does not include a sub-second precision time component.
 
 
 Time zone component
