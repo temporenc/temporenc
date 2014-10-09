@@ -10,8 +10,10 @@ serialization format for dates and times
 Introduction
 ============
 
-*Temporenc* is a serialisation format to represent date and time information as
-raw byte strings. It has the following characteristics:
+*Temporenc*  is a serialisation format to represent date and time information as
+raw byte strings.
+
+*Temporenc* has the following characteristics:
 
 
 * **Flexible**
@@ -58,21 +60,21 @@ Conceptual model
 The conceptual model used by *temporenc* for date and time values consists of
 four components:
 
-* Date (``D``)
-  
+* **Date** (``D``)
+
   This component contains year, month, and day information, each part optional.
 
-* Time (``T``)
-  
+* **Time** (``T``)
+
   This component contains hour, minute, and second information, each part
   optional.
 
-* Sub-second precision (``S``)
+* **Sub-second* precision** (``S``)
 
   This is a refinement to the time component that allows for a more precise time
   representation.
 
-* Time zone (``Z``)
+* **Time zone** (``Z``)
 
   This component specifies the UTC offset.
 
@@ -101,9 +103,6 @@ Type      Description                                         Size    Tag
 ``TSZ``   Time (with sub-second precision) + time zone        6-9     ``11111``
 ========= =================================================== ======= =========
 
-For space efficiency reasons, various common combinations of the components
-listed above have their own dedicated encoding rules.
-
 The most generic type, ``DTSZ``, can hold any possible combination of
 components, but also consumes the most space. Other types have less flexibility
 but use less space.
@@ -112,69 +111,89 @@ Each type has an associated tag (last column in the table above), which is a
 small bit string used for packing purposes (explained below).
 
 
-Encoding scheme
-===============
+Encoding rules
+==============
 
-As the first step, each component is encoded separately. The rules for encoding
-parts does not depend on the *type* of the complete structure.
+As the first step, each component is encoded separately, resulting in an array
+of bits. The rules for encoding components do not depend on the *type* of the
+final *temporenc* value.
 
-The second step consists of packing these parts into the final byte string. The
-exact packing format depends on the *type*.
+The second step consists of packing the encoded components into the final byte
+string. For space efficiency reasons, the exact packing format depends on the
+*type*.
 
-All numbers are encoded using unsigned big-endian notation.
+For representing numbers as bit strings, *temporenc* always uses unsigned
+big-endian notation, e.g. encoding the number 13 into 5 bits results in the bit
+string ``01101``.
 
-Date
-----
+
+Date component
+--------------
 
 Dates always use 21 bits, divided in three groups (left-to-right):
 
-* Year (12 bits)
+* **Year** (12 bits)
 
-  An integer between 0-4094 (both inclusive); the value 4095 means no value is
-  set.
+  An integer between 0-4094 (both inclusive); the value 4095 (``0xfff``) means
+  no value is set.
 
-* Month (4 bits)
+* **Month** (4 bits)
 
-  An integer between 0-11 (both inclusive); the value 15 means no value is set.
-  The first month (January) is encoded as 0, February as 1, and so on. Note that
-  this is off-by-one compared to normal month numbering.
+  An integer between 0-11 (both inclusive); the value 15 (``0xf``) means no
+  value is set. The first month (January) is encoded as 0, February as 1, and so
+  on. Note that this is off-by-one compared to human month numbering.
 
-* Day of month (5 bits)
+* **Day of month** (5 bits)
 
-  An integer between 0-31 (both inclusive); the value 31 means no value is set.
-  The first day of the month is encoded as 0, the next as 1. Note that this is
-  off-by-one compared to normal day numbering.
-
+  An integer between 0-31 (both inclusive); the value 31 (``0x1f``) means no
+  value is set. The first day of the month is encoded as 0, the next as 1. Note
+  that this is off-by-one compared to human day numbering.
 
 Examples:
 
-================  ==========  ================  =========  =========
-Format            Value       Year              Month       Day
-================  ==========  ================  =========  =========
-year, month, day  2014-10-08  ``011111011110``  ``1001``   ``00111``
-year, month       2014-10     ``011111011110``  ``1001``   ``11111``
-year              2014        ``011111011110``  ``1111``   ``11111``
-month, day        10-08       ``111111111111``  ``1001``   ``00111``
-================  ==========  ================  =========  =========
+================ ========== ================ ========= =========
+Format           Value      Year             Month      Day
+================ ========== ================ ========= =========
+year, month, day 1983-01-15 ``011110111111`` ``0000``  ``01110``
+year, month      1983-01    ``011110111111`` ``0000``  ``11111``
+year             1983       ``011110111111`` ``1111``  ``11111``
+month, day       01-15      ``111111111111`` ``0000``  ``01110``
+================ ========== ================ ========= =========
 
 
-Time
-----
+Time component
+--------------
 
-TODO
+Times always use 17 bits, divided in three groups (left-to-right):
 
-Dates always use 17 bits, divided in three groups (left-to-right):
+* **Hour** (5 bits)
 
-* Hour (5 bits)
+  An integer between 0-23 (both inclusive); the value 31 (``0x1f``) means no
+  value is set.
 
-  An integer between 0-23 (both inclusive); the value 31 means no value is set.
+* **Minute** (6 bits)
 
-* Minute: 6 bits (decimal 63 means no value)
-* Second: 6 bits (decimal 63 means no value)
+  An integer between 0-59 (both inclusive); the value 63 (``0x3f``) means no
+  value is set.
+
+* **Second** (6 bits)
+
+  An integer between 0-60 (both inclusive); the value 63 (``0x3f``) means no
+  value is set. Note that the value 60 is supported because it is required to
+  correctly represent leap seconds.
+
+Examples:
+
+==================== ======== ========== ========== ==========
+Format               Value    Hour       Minute     Second
+==================== ======== ========== ========== ==========
+hour, minute, second 18:25:12 ``10010``  ``110100`` ``001100``
+hour, minute         18:25    ``10010``  ``110100`` ``111111``
+==================== ======== ========== ========== ==========
 
 
-Sub-second precision time
--------------------------
+Sub-second precision time component
+-----------------------------------
 
 TODO
 
@@ -188,8 +207,8 @@ expressed as either milliseconds (ms), microsecond (µs), or nanoseconds (ns)
   * Nanosecond: 30 bits
 
 
-Time zone
----------
+Time zone component
+-------------------
 
 TODO
 
@@ -237,3 +256,43 @@ Type tag   Size     Byte 1        Byte 2        Byte 3        Byte 4        Byte
 ``11110``  5        ``11110xxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
 ``11111``  5        ``11111xxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
 =========  =======  ============  ============  ============  ============  ============  ============  ============
+
+
+Frequently asked questions
+==========================
+
+* Why the name *temporenc*?
+
+  *Temporenc* is a contraction of the words *tempore* (declension of Latin
+  *tempus*, meaning *time*) and *enc* (abbreviation for *encoding*).
+
+* Why another format when there are already so many of them?
+
+  Indeed, there are many (semi-)standardized formats to represent dates and
+  times. Examples include Unix time (elapsed time since an epoch), ISO 8601
+  strings (a very extensive ISO standard with many different string formats),
+  and SQL ``DATETIME`` strings.
+
+  Each of these formats, including *temporenc*, have their own strengths and
+  weaknesses. Some formats allow for missing values (e.g. *temporenc*), while
+  others do not (e.g. Unix time). Some can represent leap seconds (e.g.
+  ISO 8601) , while others cannot (e.g. Unix time). Some are human readable
+  (e.g. ISO 8601), some are not (e.g. *temporenc*).
+
+* What's so novel about *temporenc*?
+
+  Not much, to be honest.
+
+  Many ancient civilizations had their methods for representing dates and times,
+  and digital schemes for doing the same have been around for decades.
+
+  *temporenc* is just an attempt to cleverly combine what others have been doing
+  for a very long time. *temporenc* uses common bit packing techniques and
+  builds upon international standards for representing dates, times, and time
+  zones. All *temporenc* is about is combining existing ideas into a
+  comprehensive encoding format.
+
+* Who came up with this format?
+
+  *Temporenc* was devised by `Wouter Bolsterlee
+  <https://github.com/wbolster/>`_. Do get in touch if you feel like it!
