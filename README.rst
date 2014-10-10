@@ -260,14 +260,16 @@ below) make the value fit exactly into 5 bytes.
 
 TODO: packing formats are not properly defined yet
 
+TODO: correct total byte string sizes
+
 ========= ========= ============ ============ ============ ============ ============ ============ ============
 Type      Tag       Byte 1       Byte 2       Byte 3       Byte 4       Byte 5       Byte 6       Byte 7
 
 ========= ========= ============ ============ ============ ============ ============ ============ ============
-``D``     ``00``    ``00DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT``
+``D``     ``100``   ``100DDDDD`` ``DDDDDDDD`` ``DDDDDDDD``
 ``DT``    ``01``    ``01DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT``
-``DTZ``   ``100``   ``100DDDDD`` ``DDDDDDDD`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
-``DTS``   ``101``   ``101xxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+``DTZ``   ``101``   ``101DDDDD`` ``DDDDDDDD`` ``DDDDDDDD`` ``TTTTTTTT`` ``TTTTTTTT`` ``TZZZZZZZ``
+``DTS``   ``00``    ``00DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT`` sub-seconds
 ``DTSZ``  ``110``   ``110xxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
 ``T``     ``11100`` ``11100xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
 ``TZ``    ``11101`` ``11101xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
