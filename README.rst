@@ -37,7 +37,7 @@ raw byte strings.
 
 * **Sortable**
 
-  Encoded values using the same type (e.g. date/time without timezone) can be
+  Encoded values of the same type (such as date/time without timezone) can be
   sorted using normal lexicographical sorting routines on the encoded byte
   strings, with earlier dates sorting first, and with missing values sorting
   last. Among other benefits, this makes *temporenc* values very suited for use
@@ -145,7 +145,7 @@ Dates always use 21 bits, divided in three groups (left-to-right):
 
 * **Day of month** (5 bits)
 
-  An integer between 0-31 (both inclusive); the value 31 (``0x1f``) means no
+  An integer between 0-30 (both inclusive); the value 31 (``0x1f``) means no
   value is set. The first day of the month is encoded as 0, the next as 1. Note
   that this is off-by-one compared to human day numbering.
 
@@ -208,7 +208,7 @@ precision in use.
 
   An integer between 0-999999 (both inclusive). The padding is ``0100``.
 
-* **Milliseconds** (30 bits, padded to 32 bits)
+* **Nanoseconds** (30 bits, padded to 32 bits)
 
   An integer between 0-999999999 (both inclusive). The padding is ``10``.
 
