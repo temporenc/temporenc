@@ -189,39 +189,40 @@ Sub-second precision time component
 -----------------------------------
 
 Sub-second time precision is expressed as either milliseconds (ms), microseconds
-(µs), or nanoseconds (ns). All numbers are represented as a multiple of 8 bits
-(i.e. whole bytes), with specific padding bits on the left that indicate the
-precision in use.
+(µs), or nanoseconds (ns). Each precision requires a different number of bits,
+indicated by a 2-bit precision tag at the front of the encoded value.
 
-* **Milliseconds** (10 bits, padded to 16 bits)
+* **Milliseconds** (12 bits)
 
-  An integer between 0–999 (both inclusive). The padding is ``000000``.
+  An integer between 0–999 (both inclusive) represented as 10 bits, preceded by
+  the precision tag ``00``.
 
-* **Microseconds** (20 bits, padded to 24 bits)
+* **Microseconds** (22 bits)
 
-  An integer between 0–999999 (both inclusive). The padding is ``0100``.
+  An integer between 0–999999 (both inclusive) represented as 20 bits, preceded
+  by the precision tag ``01``.
 
-* **Nanoseconds** (30 bits, padded to 32 bits)
+* **Nanoseconds** (32 bits)
 
-  An integer between 0–999999999 (both inclusive). The padding is ``10``.
+  An integer between 0–999999999 (both inclusive) represented as 30 bits,
+  preceded by the precision tag ``10``.
 
-* **No sub-second precision** (8 bits)
+* **No sub-second precision** (2 bits)
 
-  In case no value is present, a single ``0xff`` byte is used instead. Note that
-  in practice it's often a better choice to simply use a *temporenc* type that
-  does not include a sub-second precision time component.
+  Only the precision tag ``11``. Note that if no sub-second precision time
+  component is required, using a ``temporenc`` type that does not include this
+  component at all is more efficient, e.g. by using ``DTZ`` instead of ``DTSZ``.
 
-The resulting bytes look like this:
+Examples:
 
-========= ====== ======= ============ ============ ============ ============
-Precision Size   Size    Byte 1       Byte 2       Byte 3       Byte 4
-          (bits) (bytes)
-========= ====== ======= ============ ============ ============ ============
-ms        16     2       ``000000xx`` ``xxxxxxxx``
-µs        24     3       ``0100xxxx`` ``xxxxxxxx`` ``xxxxxxxx``
-ns        32     4       ``10xxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
-none      8      1       ``11111111``
-========= ====== ======= ============ ============ ============ ============
+============ ============ ============= ==================================
+Precision    Value        Precision tag ms/µs/ns
+============ ============ ============= ==================================
+milliseconds 123 ms       ``00``        ``0001111011``
+microseconds 123456 µs    ``01``        ``00011110001001000000``
+nanoseconds  123456789 ns ``10``        ``000111010110111100110100010101``
+none         (not set)    ``11``        (nothing)
+============ ============ ============= ==================================
 
 
 Time zone component
