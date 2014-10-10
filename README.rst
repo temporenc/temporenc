@@ -92,11 +92,11 @@ Type      Description                                         Size
                                                               (bytes)
 ========= =================================================== =======
 ``D``     Date                                                3
+``T``     Time                                                3
 ``DT``    Date + time                                         5
 ``DTZ``   Date + time + time zone                             6
 ``DTS``   Date + time (with sub-second precision)             6-9
 ``DTSZ``  Date + time (with sub-second precision) + time zone 7-10
-``T``     Time                                                3
 ========= =================================================== =======
 
 The most generic type, ``DTSZ``, can represent any possible combination of
@@ -260,26 +260,23 @@ TODO: packing formats are not properly defined yet
 
 TODO: correct total byte string sizes
 
-========= ========= ============ ============ ============ ============ ============ ============ ============
-Type      Tag       Byte 1       Byte 2       Byte 3       Byte 4       Byte 5       Byte 6       Byte 7
-========= ========= ============ ============ ============ ============ ============ ============ ============
-``D``     ``100``   ``100DDDDD`` ``DDDDDDDD`` ``DDDDDDDD``
-``DT``    ``00``    ``00DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT``
-``DTZ``   ``101``   ``101DDDDD`` ``DDDDDDDD`` ``DDDDDDDD`` ``TTTTTTTT`` ``TTTTTTTT`` ``TZZZZZZZ``
-``DTS``   ``01``    ``01DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT`` sub-seconds
-``DTSZ``  ``110``   ``110xxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
-``T``     ``11100`` ``11100xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
-========= ========= ============ ============ ============ ============ ============ ============ ============
+========= =========== ============ ============ ============ ============ ============ ============ ============
+Type      Tag         Byte 1       Byte 2       Byte 3       Byte 4       Byte 5       Byte 6       Byte 7
+========= =========== ============ ============ ============ ============ ============ ============ ============
+``D``     ``100``     ``100DDDDD`` ``DDDDDDDD`` ``DDDDDDDD``
+``T``     ``1110000`` ``1110000T`` ``TTTTTTTT`` ``TTTTTTTT``
+``DT``    ``00``      ``00DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT``
+``DTZ``   ``101``     ``101DDDDD`` ``DDDDDDDD`` ``DDDDDDDD`` ``TTTTTTTT`` ``TTTTTTTT`` ``TZZZZZZZ``
+``DTS``   ``01``      ``01DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT`` sub-seconds
+``DTSZ``  ``110``     ``110DDDDD`` ``DDDDDDDD`` ``DDDDDDDD`` ``TTTTTTTT`` ``TTTTTTTT`` ``Txxxxxxx`` sub-seconds
+========= =========== ============ ============ ============ ============ ============ ============ ============
 
-.. D     21  3
-.. DT    38  2
-.. DTZ   45  3
-.. DTS   38  2  (plus S)
-.. DTSZ  28  2  (plus S and Z)
-.. T     17  7
-.. TZ    24  8
-.. TS    17  7  (plus S)
-.. TSZ   17  7  (plus S and Z)
+..   D     21, tag 3
+..   T     17, tag 7
+..   DT    38, tag 2
+..   DTZ   45, tag 3
+..   DTS   38 with S 40/50/60/70  tag 0/6/4/2, tag 2
+..   DTSZ  45 with S 47/57/67/77  tag 1/7/5/3, tag 3 (no S is not a common format)
 
 A decoder must inspect the first byte to determine the total size of the
 structure and the way it is packed. FIXME not true with sub-second precision.
