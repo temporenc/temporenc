@@ -304,6 +304,9 @@ Frequently asked questions
   ISO 8601) , while others cannot (e.g. Unix time). Some are human readable
   (e.g. ISO 8601), some are not (e.g. *temporenc*).
 
+  *Temporenc* provides just a different trade-off that favours encoded space and
+  flexibility over human readability and parsing convenience.
+
 * What's so novel about *temporenc*?
 
   Not much, to be honest.
