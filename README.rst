@@ -234,22 +234,23 @@ none      8      1       ``11111111``
 Time zone component
 -------------------
 
-TODO
+Time zone information always uses 7 bits. The UTC offset of the time zone
+(usually written as ±HH:MM) is expressed as the number of 15 minute increments
+from UTC, with the constant 64 added to it to ensure the value is a positive
+integer in the range 0-126 (both inclusive). The special value 127 (``0x7f``)
+means no value is set.
 
-, expressed as the offset from UTC
-
-Time zones use 7 bits.
-
-The UTC offset (±HH:MM) is expressed as the number of 15m increments from UTC,
-with the constant 64 added to it to ensure the value is a positive number.
 Examples:
 
-* UTC: ``1000000`` (decimal 64)
+========== ================ ============= =============
+UTC offset UTC offset       Encoded value Encoded value
+           (15m increments) (decimal)     (bits)
+========== ================ ============= =============
++00:00     0                64            ``1000000``
++02:00     8                72            ``1001000``
+-06:00     -24              40            ``0101000``
+========== ================ ============= =============
 
-* UTC+0200: ``1001000`` (decimal 72); ``72 - 64 = 8`` quarters, i.e. ``2`` hours
-
-* UTC-0600: ``0101000`` (decimal 40); ``40 - 64 = -24`` quarters, i.e. ``-6``
-  hours
 
 Packing type tags and parts
 ===========================
