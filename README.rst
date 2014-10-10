@@ -283,8 +283,8 @@ Type tag   Size     Byte 1        Byte 2        Byte 3        Byte 4        Byte
 =========  =======  ============  ============  ============  ============  ============  ============  ============
 
 
-Frequently asked questions
-==========================
+Questions and answers
+=====================
 
 * Why the name *temporenc*?
 
