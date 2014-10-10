@@ -24,11 +24,11 @@ raw byte strings.
 
 * **Compact**
 
-  Encoded values have a variable size between 3 and 11 bytes, depending on the
+  Encoded values have a variable size between 3 and 10 bytes, depending on the
   components being included. For example, an encoded date uses 3 bytes, and an
   encoded time also takes 3 bytes, but an encoded date with time together use
   only 5 bytes. At the other end of the spectrum, an encoded date with time
-  using nanosecond precision, and also a time zone attached, takes 11 bytes.
+  using nanosecond precision, and also a time zone attached, takes 10 bytes.
 
 * **Self-contained**
 
@@ -95,12 +95,12 @@ Type      Description                                         Size    Tag
 ``D``     Date                                                3       ``00``
 ``DT``    Date + time                                         5       ``01``
 ``DTZ``   Date + time + time zone                             6       ``100``
-``DTS``   Date + time (with sub-second precision)             7-10    ``101``
-``DTSZ``  Date + time (with sub-second precision) + time zone 8-11    ``110``
+``DTS``   Date + time (with sub-second precision)             6-9     ``101``
+``DTSZ``  Date + time (with sub-second precision) + time zone 7-10    ``110``
 ``T``     Time                                                3       ``11100``
 ``TZ``    Time + time zone                                    4       ``11101``
-``TS``    Time (with sub-second precision)                    5-8     ``11110``
-``TSZ``   Time (with sub-second precision) + time zone        6-9     ``11111``
+``TS``    Time (with sub-second precision)                    4-7     ``11110``
+``TSZ``   Time (with sub-second precision) + time zone        5-8     ``11111``
 ========= =================================================== ======= =========
 
 The most generic type, ``DTSZ``, can hold any possible combination of
