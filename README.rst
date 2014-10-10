@@ -15,7 +15,6 @@ raw byte strings.
 
 *Temporenc* has the following characteristics:
 
-
 * **Flexible**
 
   *Temporenc* support any combination of a date, a time, and a timezone. In
@@ -88,28 +87,24 @@ Temporenc types
 *Temporenc* defines 9 *types*, each of them being a particular combination of
 date, time, sub-second time precision, and time zone information:
 
-========= =================================================== ======= =========
-Type      Description                                         Size    Tag
+========= =================================================== =======
+Type      Description                                         Size
                                                               (bytes)
-========= =================================================== ======= =========
-``D``     Date                                                3       ``00``
-``DT``    Date + time                                         5       ``01``
-``DTZ``   Date + time + time zone                             6       ``100``
-``DTS``   Date + time (with sub-second precision)             6-9     ``101``
-``DTSZ``  Date + time (with sub-second precision) + time zone 7-10    ``110``
-``T``     Time                                                3       ``11100``
-``TZ``    Time + time zone                                    4       ``11101``
-``TS``    Time (with sub-second precision)                    4-7     ``11110``
-``TSZ``   Time (with sub-second precision) + time zone        5-8     ``11111``
-========= =================================================== ======= =========
+========= =================================================== =======
+``D``     Date                                                3
+``DT``    Date + time                                         5
+``DTZ``   Date + time + time zone                             6
+``DTS``   Date + time (with sub-second precision)             6-9
+``DTSZ``  Date + time (with sub-second precision) + time zone 7-10
+``T``     Time                                                3
+``TZ``    Time + time zone                                    4
+``TS``    Time (with sub-second precision)                    4-7
+``TSZ``   Time (with sub-second precision) + time zone        5-8
+========= =================================================== =======
 
 The most generic type, ``DTSZ``, can hold any possible combination of
 components, but also consumes the most space. Other types have less flexibility
 but use less space.
-
-Each type has an associated tag (last column in the table above), which is a
-small bit string used for packing purposes (explained below).
-
 
 Encoding rules
 ==============
@@ -252,35 +247,46 @@ UTC offset UTC offset       Encoded value Encoded value
 ========== ================ ============= =============
 
 
-Packing type tags and parts
-===========================
+Packing it all together
+-----------------------
 
-TODO
+Each *temporenc* type has an associated tag, which is a small bit string used
+for packing purposes. The tag is always encoded as the left-most bits of the
+first byte.
 
 The tags are chosen to minimize the size of the complete value. For example, by
 using 2 bits (``00``) for encoding a date and time, the remaining 38 bits (see
 below) make the value fit exactly into 5 bytes.
 
+TODO: packing formats are not properly defined yet
+
+========= ========= ============ ============ ============ ============ ============ ============ ============
+Type      Tag       Byte 1       Byte 2       Byte 3       Byte 4       Byte 5       Byte 6       Byte 7
+
+========= ========= ============ ============ ============ ============ ============ ============ ============
+``D``     ``00``    ``00DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT``
+``DT``    ``01``    ``01DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT``
+``DTZ``   ``100``   ``100DDDDD`` ``DDDDDDDD`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+``DTS``   ``101``   ``101xxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+``DTSZ``  ``110``   ``110xxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+``T``     ``11100`` ``11100xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+``TZ``    ``11101`` ``11101xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+``TS``    ``11110`` ``11110xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+``TSZ``   ``11111`` ``11111xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
+========= ========= ============ ============ ============ ============ ============ ============ ============
+
+.. D     21  3
+.. DT    38  2
+.. DTZ   45  3
+.. DTS   38  2  (plus S)
+.. DTSZ  28  2  (plus S and Z)
+.. T     17  7
+.. TZ    24  8
+.. TS    17  7  (plus S)
+.. TSZ   17  7  (plus S and Z)
+
 A decoder must inspect the first byte to determine the total size of the
 structure and the way it is packed. FIXME not true with sub-second precision.
-
-The tag is always encoded as the left-most bits of the first byte, the second
-column shows what the first byte looks like.
-
-=========  =======  ============  ============  ============  ============  ============  ============  ============
-Type tag   Size     Byte 1        Byte 2        Byte 3        Byte 4        Byte 5        Byte 6        Byte 7
-           (bytes)
-=========  =======  ============  ============  ============  ============  ============  ============  ============
-``00``     5        ``00DDDDDD``  ``DDDDDDDD``  ``DDDDDDDT``  ``TTTTTTTT``  ``TTTTTTTT``
-``01``     6        ``01DDDDDD``  ``DDDDDDDD``  ``DDDDDDDT``  ``TTTTTTTT``  ``TTTTTTTT``  sub-seconds
-``100``    5        ``100xxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
-``101``    5        ``101xxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
-``110``    5        ``110xxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
-``11100``  5        ``11100xxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
-``11101``  5        ``11101xxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
-``11110``  5        ``11110xxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
-``11111``  5        ``11111xxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``  ``xxxxxxxx``
-=========  =======  ============  ============  ============  ============  ============  ============  ============
 
 
 Questions and answers
