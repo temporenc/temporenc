@@ -212,6 +212,12 @@ precision in use.
 
   An integer between 0-999999999 (both inclusive). The padding is ``10``.
 
+* **No sub-second precision** (8 bits)
+
+  In case no value is present, a single ``0xff`` byte is used instead. Note that
+  in practice it's often a better choice to simply use a *temporenc* type that
+  does not include a sub-second precision time component.
+
 The resulting bytes look like this:
 
 ========= ====== ======= ============ ============ ============ ============
@@ -223,10 +229,6 @@ ms        16     2       ``000000xx`` ``xxxxxxxx``
 ns        32     4       ``10xxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
 none      8      1       ``11111111``
 ========= ====== ======= ============ ============ ============ ============
-
-In case no value is present, a single ``0xff`` byte is used instead. Note that
-in practice it's often a better choice to simply use a *temporenc* type that
-does not include a sub-second precision time component.
 
 
 Time zone component
