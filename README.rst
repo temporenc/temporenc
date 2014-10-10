@@ -243,8 +243,8 @@ means no value is set.
 Examples:
 
 ========== ================ ============= =============
-UTC offset UTC offset       Encoded value Encoded value
-           (15m increments) (decimal)     (bits)
+UTC offset UTC offset       Encoded value Encoded value
+           (15m increments) (decimal)     (bits)
 ========== ================ ============= =============
 +00:00     0                64            ``1000000``
 +02:00     8                72            ``1001000``
