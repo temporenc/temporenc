@@ -84,7 +84,7 @@ A *temporenc* value supports all possible combinations of these components
 Temporenc types
 ===============
 
-*Temporenc* defines 9 *types*, each of them being a particular combination of
+*Temporenc* defines 6 *types*, each of them being a particular combination of
 date, time, sub-second time precision, and time zone information:
 
 ========= =================================================== =======
@@ -97,14 +97,12 @@ Type      Description                                         Size
 ``DTS``   Date + time (with sub-second precision)             6-9
 ``DTSZ``  Date + time (with sub-second precision) + time zone 7-10
 ``T``     Time                                                3
-``TZ``    Time + time zone                                    4
-``TS``    Time (with sub-second precision)                    4-7
-``TSZ``   Time (with sub-second precision) + time zone        5-8
 ========= =================================================== =======
 
-The most generic type, ``DTSZ``, can hold any possible combination of
-components, but also consumes the most space. Other types have less flexibility
-but use less space.
+The most generic type, ``DTSZ``, can represent any possible combination of
+components, but also consumes the most space. Other types omit components (the
+missing components are defined to have no value), and use less space as a
+result.
 
 Encoding rules
 ==============
@@ -264,17 +262,13 @@ TODO: correct total byte string sizes
 
 ========= ========= ============ ============ ============ ============ ============ ============ ============
 Type      Tag       Byte 1       Byte 2       Byte 3       Byte 4       Byte 5       Byte 6       Byte 7
-
 ========= ========= ============ ============ ============ ============ ============ ============ ============
 ``D``     ``100``   ``100DDDDD`` ``DDDDDDDD`` ``DDDDDDDD``
-``DT``    ``01``    ``01DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT``
+``DT``    ``00``    ``00DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT``
 ``DTZ``   ``101``   ``101DDDDD`` ``DDDDDDDD`` ``DDDDDDDD`` ``TTTTTTTT`` ``TTTTTTTT`` ``TZZZZZZZ``
-``DTS``   ``00``    ``00DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT`` sub-seconds
+``DTS``   ``01``    ``01DDDDDD`` ``DDDDDDDD`` ``DDDDDDDT`` ``TTTTTTTT`` ``TTTTTTTT`` sub-seconds
 ``DTSZ``  ``110``   ``110xxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
 ``T``     ``11100`` ``11100xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
-``TZ``    ``11101`` ``11101xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
-``TS``    ``11110`` ``11110xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
-``TSZ``   ``11111`` ``11111xxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx`` ``xxxxxxxx``
 ========= ========= ============ ============ ============ ============ ============ ============ ============
 
 .. D     21  3
