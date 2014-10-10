@@ -134,18 +134,18 @@ Dates always use 21 bits, divided in three groups (left-to-right):
 
 * **Year** (12 bits)
 
-  An integer between 0-4094 (both inclusive); the special value 4095 (``0xfff``)
+  An integer between 0–4094 (both inclusive); the special value 4095 (``0xfff``)
   means no value is set.
 
 * **Month** (4 bits)
 
-  An integer between 0-11 (both inclusive); the special value 15 (``0xf``) means
+  An integer between 0–11 (both inclusive); the special value 15 (``0xf``) means
   no value is set. The first month (January) is encoded as 0, February as 1, and
   so on. Note that this is off-by-one compared to human month numbering.
 
 * **Day of month** (5 bits)
 
-  An integer between 0-30 (both inclusive); the special value 31 (``0x1f``)
+  An integer between 0–30 (both inclusive); the special value 31 (``0x1f``)
   means no value is set. The first day of the month is encoded as 0, the next as
   1. Note that this is off-by-one compared to human day numbering.
 
@@ -168,17 +168,17 @@ Times always use 17 bits, divided in three groups (left-to-right):
 
 * **Hour** (5 bits)
 
-  An integer between 0-23 (both inclusive); the special value 31 (``0x1f``)
+  An integer between 0–23 (both inclusive); the special value 31 (``0x1f``)
   means no value is set.
 
 * **Minute** (6 bits)
 
-  An integer between 0-59 (both inclusive); the special value 63 (``0x3f``)
+  An integer between 0–59 (both inclusive); the special value 63 (``0x3f``)
   means no value is set.
 
 * **Second** (6 bits)
 
-  An integer between 0-60 (both inclusive); the special value 63 (``0x3f``)
+  An integer between 0–60 (both inclusive); the special value 63 (``0x3f``)
   means no value is set. Note that the value 60 is supported because it is
   required to correctly represent leap seconds.
 
@@ -202,15 +202,15 @@ precision in use.
 
 * **Milliseconds** (10 bits, padded to 16 bits)
 
-  An integer between 0-999 (both inclusive). The padding is ``000000``.
+  An integer between 0–999 (both inclusive). The padding is ``000000``.
 
 * **Microseconds** (20 bits, padded to 24 bits)
 
-  An integer between 0-999999 (both inclusive). The padding is ``0100``.
+  An integer between 0–999999 (both inclusive). The padding is ``0100``.
 
 * **Nanoseconds** (30 bits, padded to 32 bits)
 
-  An integer between 0-999999999 (both inclusive). The padding is ``10``.
+  An integer between 0–999999999 (both inclusive). The padding is ``10``.
 
 * **No sub-second precision** (8 bits)
 
@@ -237,7 +237,7 @@ Time zone component
 Time zone information always uses 7 bits. The UTC offset of the time zone
 (usually written as ±HH:MM) is expressed as the number of 15 minute increments
 from UTC, with the constant 64 added to it to ensure the value is a positive
-integer in the range 0-126 (both inclusive). The special value 127 (``0x7f``)
+integer in the range 0–126 (both inclusive). The special value 127 (``0x7f``)
 means no value is set.
 
 Examples:
