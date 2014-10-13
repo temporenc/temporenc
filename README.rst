@@ -326,6 +326,13 @@ Questions and answers
   zones. All *temporenc* is about is combining existing ideas into a
   comprehensive encoding format.
 
+* Why does *temporenc* use so many variable-sized components?
+
+  The type tags and packing formats are designed to minimize the size of the
+  final encoded byte string. For example, by using a 2-bit type tag for ``DT``
+  values (date with time), the 38 bits required for representing the actual date
+  and time fit exactly into 5 bytes.
+
 * Who came up with this format?
 
   *Temporenc* was devised by `Wouter Bolsterlee
