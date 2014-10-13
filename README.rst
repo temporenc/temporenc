@@ -108,9 +108,14 @@ storage overhead for unused components can be eliminated completely.
 Encoding rules
 ==============
 
-As the first step, each component is encoded separately, resulting in an array
-of bits. The rules for encoding components do not depend on the *type* of the
-final *temporenc* value.
+Encoding is done in two stages:
+
+* In the first stage, each component is encoded separately, resulting in an
+  array of bits. The rules for encoding components do not depend on the *type*
+  of the final *temporenc* value.
+
+* The second stage consists of packing the encoded components into the final
+  byte string.
 
 For representing numbers as bit strings, *temporenc* always uses unsigned
 big-endian notation, e.g. encoding the number 13 into 5 bits results in the bit
@@ -250,9 +255,6 @@ UTC offset UTC offset       Encoded value Encoded value
 
 Packing complete values
 -----------------------
-
-The second step consists of packing the encoded components into the final byte
-string.
 
 The exact packing format depends on the *type*. Each *temporenc* type is
 therefor assigned a unique *type tag*, which is a short bit string at the
