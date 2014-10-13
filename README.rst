@@ -7,7 +7,7 @@ serialization format for dates and times
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-*Temporenc*  is a serialisation format to represent date and time information as
+*Temporenc*  is a serialization format to represent date and time information as
 raw byte strings.
 
 Features
