@@ -479,6 +479,18 @@ Questions and answers
   values (date with time), the 38 bits required for representing the actual date
   and time fit exactly into 5 bytes.
 
+* How does *temporenc* relate to other serialization formats like *MessagePack*,
+  *Thrift*, or *Protocol buffers*?
+
+  *Temporenc* only concerns itself with the encoding of date and time
+  information into byte strings, not with the serialization of nested data
+  structures. This means encoded *temporenc* values can simply be used inside
+  larger data structures, which can then be serialized using a generic
+  serialization format like *MessagePack* (which supports raw byte strings).
+  Upon decoding, the raw byte string is made available again, which a
+  *temporenc* decoder can then parse into the original date and time
+  information.
+
 * Who came up with this format?
 
   *Temporenc* was devised by `Wouter Bolsterlee
