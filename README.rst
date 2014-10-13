@@ -297,25 +297,68 @@ The various *temporenc types* are encoded like this:
 
   The type tag is ``00``. Encoded values use 5 bytes in this format::
 
-      00DDDDDD DDDDDDDD DDDDDDDT TTTTTTTT TTTTTTTT
+      00DDDDDD DDDDDDDD DDDDDDDT TTTTTTTT
+      TTTTTTTT
 
 * **Date + time + time zone** (``DTZ``)
 
   The type tag is ``110``. Encoded values use 6 bytes in this format::
 
-      110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT TTTTTTTT TZZZZZZZ
+      110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT
+      TTTTTTTT TZZZZZZZ
 
 * **Date + time (with sub-second precision)** (``DTS``)
 
-  The type tag is ``01``.
+  The type tag is ``01``, followed by the precision tag ``P``.
+  Values are padded with zero bits to align to full bytes.
 
-  TODO
+  For millisecond (ms) precision, encoded values use 7 bytes in this format::
+
+    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+    TTTTTTTT TTSSSSSS SSSS0000
+
+  For microsecond (µs) precision, encoded values use 8 bytes in this format::
+
+    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+    TTTTTTTT TTSSSSSS SSSSSSSS SSSSSS00
+
+  For nanosecond (ns) precision, encoded values use 9 bytes in this format::
+
+    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+    TTTTTTTT TTSSSSSS SSSSSSSS SSSSSSSS
+    SSSSSSSS
+
+  In case the sub-second precision component has no value set, encoded values
+  use 6 bytes in this format::
+
+    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+    TTTTTTTT TT000000
 
 * **Date + time (with sub-second precision) + time zone** (``DTSZ``)
 
-  The type tag is ``111``.
+  The type tag is ``111``, followed by the precision tag ``P``.
+  Values are padded with zero bits to align to full bytes.
 
-  TODO
+  For millisecond (ms) precision, encoded values use 8 bytes in this format::
+
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT TTTTTTTT TTTSSSSS
+    SSSSSZZZ ZZZZ0000
+
+  For microsecond (µs) precision, encoded values use 9 bytes in this format::
+
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT TTTTTTTT TTTSSSSS
+    SSSSSSSS SSSSSSSZ ZZZZZZ00
+
+  For nanosecond (ns) precision, encoded values use 10 bytes in this format::
+
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT TTTTTTTT TTTSSSSS
+    SSSSSSSS SSSSSSSS SSSSSSSS SZZZZZZZ
+
+  In case the sub-second precision component has no value set, encoded values
+  use 7 bytes in this format::
+
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+    TTTTTTTT TTTZZZZZ ZZ000000
 
 
 Examples
@@ -351,7 +394,6 @@ Type ``DTZ``:
 * 1983-01-15T18:25:12+01:00
 * ``11001111 01111110 00001110 10010110 10000110 01000100``
 * ``cf 7e 0e 96 86 44``
-
 
 
 Questions and answers
