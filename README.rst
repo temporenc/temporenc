@@ -125,7 +125,7 @@ string ``01101`` (8 + 4 + 1).
 Date component
 --------------
 
-The date component (``D``) always use 21 bits, divided in three groups
+The date component (``D``) always uses 21 bits, divided in three groups
 (left-to-right):
 
 * **Year** (12 bits)
@@ -160,7 +160,7 @@ month, day       01-15      ``111111111111`` ``0000``  ``01110``
 Time component
 --------------
 
-The time component (``T``) always use 17 bits, divided in three groups
+The time component (``T``) always uses 17 bits, divided in three groups
 (left-to-right):
 
 * **Hour** (5 bits)
