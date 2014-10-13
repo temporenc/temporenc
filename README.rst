@@ -310,7 +310,7 @@ The various *temporenc types* are encoded like this:
 * **Date + time (with sub-second precision)** (``DTS``)
 
   The type tag is ``01``, followed by the precision tag ``P``.
-  Values are padded with zero bits to align to full bytes.
+  Values are zero-padded on the right up to the first byte boundary.
 
   For millisecond (ms) precision, encoded values use 7 bytes in this format::
 
@@ -337,22 +337,24 @@ The various *temporenc types* are encoded like this:
 * **Date + time (with sub-second precision) + time zone** (``DTSZ``)
 
   The type tag is ``111``, followed by the precision tag ``P``.
-  Values are padded with zero bits to align to full bytes.
+  Values are zero-padded on the right up to the first byte boundary.
 
   For millisecond (ms) precision, encoded values use 8 bytes in this format::
 
-    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT TTTTTTTT TTTSSSSS
-    SSSSSZZZ ZZZZ0000
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+    TTTTTTTT TTTSSSSS SSSSSZZZ ZZZZ0000
 
   For microsecond (µs) precision, encoded values use 9 bytes in this format::
 
-    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT TTTTTTTT TTTSSSSS
-    SSSSSSSS SSSSSSSZ ZZZZZZ00
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+    TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSZ
+    ZZZZZZ00
 
   For nanosecond (ns) precision, encoded values use 10 bytes in this format::
 
-    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT TTTTTTTT TTTSSSSS
-    SSSSSSSS SSSSSSSS SSSSSSSS SZZZZZZZ
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+    TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSS
+    SSSSSSSS SZZZZZZZ
 
   In case the sub-second precision component has no value set, encoded values
   use 7 bytes in this format::
