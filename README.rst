@@ -17,22 +17,23 @@ raw byte strings.
 
 * **Flexible**
 
-  *Temporenc* support any combination of a date, a time, and a timezone. In
-  addition to that all fields are optional. For example, it is possible to
-  encode a year and a day without a month.
+  *Temporenc* support any combination of a date, a time, and a timezone. All
+  fields are optional. For example, it is possible to encode a year and a day
+  without a month.
 
 * **Compact**
 
   Encoded values have a variable size between 3 and 10 bytes, depending on the
   components being included. For example, an encoded date uses 3 bytes, and an
-  encoded time also takes 3 bytes, but an encoded date with time together use
-  only 5 bytes. At the other end of the spectrum, an encoded date with time
-  using nanosecond precision, and also a time zone attached, takes 10 bytes.
+  encoded time also takes 3 bytes, but an encoded date with time uses only 5
+  bytes. At the other extreme, it takes only 10 bytes to encode a date with time
+  using nanosecond precision and a time zone.
 
 * **Self-contained**
 
   Encoded values contain all information needed for decoding. Consuming
-  applications do not have to know which format was used for encoding.
+  applications do not have to know which format was used for encoding, since
+  this can be discovered by looking at the first byte of the value.
 
 * **Sortable**
 
@@ -56,7 +57,7 @@ raw byte strings.
 Conceptual model
 ================
 
-The conceptual model used by *temporenc* for date and time values consists of
+*Temporenc* uses a conceptual model for date and time values that consists of
 four components:
 
 * **Date** (``D``)
@@ -70,15 +71,15 @@ four components:
 
 * **Sub-second precision** (``S``)
 
-  This is a refinement to the time component that allows for a more precise time
-  representation.
+  This component is a refinement to the time component that allows for a more
+  precise time representation.
 
 * **Time zone** (``Z``)
 
   This component specifies the UTC offset.
 
-A *temporenc* value supports all possible combinations of these components
-(including any combination of sub-components), with all parts being optional.
+*Temporenc* supports any possible combination of these components, including any
+combination of sub-components.
 
 
 Temporenc types
@@ -95,14 +96,19 @@ Type      Description                                         Size
 ``T``     Time                                                3
 ``DT``    Date + time                                         5
 ``DTZ``   Date + time + time zone                             6
-``DTS``   Date + time (with sub-second precision)             6-9
-``DTSZ``  Date + time (with sub-second precision) + time zone 7-10
+``DTS``   Date + time (with sub-second precision)             6–9
+``DTSZ``  Date + time (with sub-second precision) + time zone 7–10
 ========= =================================================== =======
 
-The most generic type, ``DTSZ``, can represent any possible combination of
-components, but also consumes the most space. Other types omit components (the
-missing components are defined to have no value), and use less space as a
-result.
+The canonical type ``DTSZ`` (a superset of all the other types) is the most
+flexible and can represent any possible combination of components, but also
+consumes the most space.
+
+Applications can use a different type to save space, at the cost of reduced
+flexibility. The types are chosen in such a way that both sub-second precision
+and time zone support are completely optional; by using the correct type the
+storage overhead for unused components can be eliminated completely.
+
 
 Encoding rules
 ==============
