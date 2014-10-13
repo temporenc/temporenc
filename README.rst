@@ -111,15 +111,15 @@ Encoding rules
 Encoding is done in two stages:
 
 * In the first stage, each component is encoded separately, resulting in an
-  array of bits. The rules for encoding components do not depend on the *type*
-  of the final *temporenc* value.
+  array of bits. The rules for encoding components is the same for all
+  *temporenc types*.
 
 * The second stage consists of packing the encoded components into the final
-  byte string.
+  byte string. The exact packing format depends on the *temporenc* type in use.
 
 For representing numbers as bit strings, *temporenc* always uses unsigned
 big-endian notation, e.g. encoding the number 13 into 5 bits results in the bit
-string ``01101``.
+string ``01101`` (8 + 4 + 1).
 
 
 Date component
