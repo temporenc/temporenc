@@ -7,11 +7,11 @@ serialization format for dates and times
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Introduction
-============
-
 *Temporenc*  is a serialisation format to represent date and time information as
 raw byte strings.
+
+Features
+========
 
 *Temporenc* has the following characteristics:
 
@@ -263,8 +263,9 @@ beginning of the encoded value that is used for identification purposes.
 To create the final byte string, the *type tag*, and the sub-second precision
 tag ``P`` (if applicable) are encoded into the left-most bits of the first byte.
 The remainder is simply a concatenation of the bit strings for the encoded
-components, with padding zeroes on the right to align it to complete bytes. The
-general structure of an encoded *temporenc* value is::
+components of the *temporenc* type being encoded, with padding zeroes on the
+right to align it to complete bytes (if needed). The general structure of an
+encoded *temporenc* value is::
 
   tag, P, D, T, S, Z, padding
 
