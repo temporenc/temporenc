@@ -383,25 +383,33 @@ shows the human-readable value (``YYYY-MM-DDTHH:MM:SS.sssssssss±hh:mm``), the
 encoded value as a bit string, and the encoded value as bytes (hexadecimal
 notation).
 
-* **Date** (``D``)::
+* **Date** (``D``)
+  
+  ::
 
     1983-01-15
     10001111 01111110 00001110
     8f 7e 0e
 
-* **Time** (``T``)::
+* **Time** (``T``)
+  
+  ::
 
     18:25:12
     10100001 00101101 00001100
     a1 2d 0c
 
-* **Date + time** (``DT``)::
+* **Date + time** (``DT``)
+  
+  ::
 
     1983-01-15T18:25:12
     00011110 11111100 00011101 00101101 00001100
     1e fc 1d 2d 0c
 
-* **Date + time + time zone** (``DTZ``)::
+* **Date + time + time zone** (``DTZ``)
+  
+  ::
 
     1983-01-15T18:25:12+01:00
     11001111 01111110 00001110 10010110 10000110 01000100
