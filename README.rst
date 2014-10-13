@@ -122,8 +122,8 @@ big-endian notation, e.g. encoding the number 13 into 5 bits results in the bit
 string ``01101`` (8 + 4 + 1).
 
 
-Date component
---------------
+Date component (``D``)
+----------------------
 
 The date component (``D``) always uses 21 bits, divided in three groups
 (left-to-right):
@@ -157,8 +157,8 @@ month, day       01-15      ``111111111111`` ``0000``  ``01110``
 ================ ========== ================ ========= =========
 
 
-Time component
---------------
+Time component (``T``)
+----------------------
 
 The time component (``T``) always uses 17 bits, divided in three groups
 (left-to-right):
@@ -189,8 +189,8 @@ hour, minute         18:25    ``10010``  ``110100`` ``111111``
 ==================== ======== ========== ========== ==========
 
 
-Sub-second precision time component
------------------------------------
+Sub-second precision time component (``S`` and ``P``)
+-----------------------------------------------------
 
 The sub-second time precision component (``S``) is expressed as either
 milliseconds (ms), microseconds (µs), or nanoseconds (ns). Each precision
@@ -232,8 +232,8 @@ none         (not set)    ``11``        (nothing)
 ============ ============ ============= ==================================
 
 
-Time zone component
--------------------
+Time zone component (``Z``)
+---------------------------
 
 The time zone component (``Z``) always uses 7 bits. The UTC offset of the time
 zone (usually written as ±HH:MM) is expressed as the number of 15 minute
@@ -340,8 +340,8 @@ The various *temporenc types* are encoded like this:
     TTTTTTTT TTSSSSSS SSSSSSSS SSSSSSSS
     SSSSSSSS
 
-  In case the sub-second precision component has no value set, encoded values
-  use 6 bytes in this format::
+  In case the sub-second precision component has no value, encoded values use 6
+  bytes in this format::
 
     01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
     TTTTTTTT TT000000
@@ -368,8 +368,8 @@ The various *temporenc types* are encoded like this:
     TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSS
     SSSSSSSS SZZZZZZZ
 
-  In case the sub-second precision component has no value set, encoded values
-  use 7 bytes in this format::
+  In case the sub-second precision component has no value, encoded values use 7
+  bytes in this format::
 
     111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
     TTTTTTTT TTTZZZZZ ZZ000000
