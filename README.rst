@@ -105,8 +105,8 @@ and time zone support are completely optional; by using the correct type the
 storage overhead for unused components can be eliminated completely.
 
 
-Encoding rules for *temporenc* components
-=========================================
+Encoding rules
+==============
 
 As the first step, each component is encoded separately, resulting in an array
 of bits. The rules for encoding components do not depend on the *type* of the
@@ -248,31 +248,21 @@ UTC offset UTC offset       Encoded value Encoded value
 ========== ================ ============= =============
 
 
-Encoding rules for *temporenc* values
-=====================================
+Packing complete values
+-----------------------
 
 The second step consists of packing the encoded components into the final byte
-string. The exact packing format depends on the *type*. Each *temporenc* type
-has a unique *type tag*, which is a short bit string used for identification
-purposes:
+string.
 
-======== =========== ========
-Type     Tag         Tag size
-                     (bits)
-======== =========== ========
-``D``    ``100``     3
-``T``    ``1010000`` 3
-``DT``   ``00``      2
-``DTZ``  ``110``     3
-``DTS``  ``01``      2
-``DTSZ`` ``111``     3
-======== =========== ========
+The exact packing format depends on the *type*. Each *temporenc* type is
+therefor assigned a unique *type tag*, which is a short bit string at the
+beginning of the encoded value that is used for identification purposes.
 
 To create the final byte string, the *type tag*, and the sub-second precision
 tag ``P`` (if applicable) are encoded into the left-most bits of the first byte.
 The remainder is simply a concatenation of the bit strings for the encoded
 components, with padding zeroes on the right to align it to complete bytes. The
-general structure of an encoded *temporenc* value is therefor::
+general structure of an encoded *temporenc* value is::
 
   tag, P, D, T, S, Z, padding
 
@@ -281,113 +271,85 @@ The advantages of this approach are:
 * The total size of encoded values is very small.
 
 * Encoded values of the same type can be sorted lexicographically.
-  
+
 * Since both the tag and ``P`` part always fits into the first byte, a decoder
   only needs the first byte to determine the total size and layout of the
   complete value, which is useful for decoding streams of data without the need
   for framing.
 
-The remainder of this section defines the exact packing formats for each
-*temporenc* type. All examples show the human-readable value in ISO 8601 format
-(general form ``YYYY-MM-DDTHH:MM:SS.sssssssss±hh:mm``) and the encoded value as
-both a bit string and hexadecimal byte values.
+The various *temporenc types* are encoded like this:
 
-Type ``D``
-----------
+* **Date** (``D``)
 
-The *temporenc* type ``D`` uses 3 bytes and is encoded using this format:
+  The type tag is ``100``. Encoded values use 3 bytes in this format::
 
-====== ============
-Byte   Bit pattern
-====== ============
-1      ``100DDDDD``
-2      ``DDDDDDDD``
-3      ``DDDDDDDD``
-====== ============
+      100DDDDD DDDDDDDD DDDDDDDD
 
-Example:
+* **Time** (``T``)
 
-=============== ==============================
-Value           1983-01-15
-Encoded (bits)  ``10001111 01111110 00001110``
-Encoded (bytes) ``8f 7e 0e``
-=============== ==============================
+  The type tag is ``1010000``. Encoded values use 3 bytes in this format::
+
+      1010000T TTTTTTTT TTTTTTTT
+
+* **Date + time** (``DT``)
+
+  The type tag is ``00``. Encoded values use 5 bytes in this format::
+
+      00DDDDDD DDDDDDDD DDDDDDDT TTTTTTTT TTTTTTTT
+
+* **Date + time + time zone** (``DTZ``)
+
+  The type tag is ``110``. Encoded values use 6 bytes in this format::
+
+      110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT TTTTTTTT TZZZZZZZ
+
+* **Date + time (with sub-second precision)** (``DTS``)
+
+  The type tag is ``01``.
+
+  TODO
+
+* **Date + time (with sub-second precision) + time zone** (``DTSZ``)
+
+  The type tag is ``111``.
+
+  TODO
 
 
-Type ``T`` (time)
------------------
+Examples
+========
 
-The *temporenc* type ``T`` uses 3 bytes and is encoded using this format:
+The examples below follow this format:
 
-====== ============
-Byte   Bit pattern
-====== ============
-1      ``1010000T``
-2      ``TTTTTTTT``
-3      ``TTTTTTTT``
-====== ============
+* human-readable value in ISO 8601 format (general form
+  ``YYYY-MM-DDTHH:MM:SS.sssssssss±hh:mm``)
+* encoded value as a bit string
+* encoded value as bytes (hexadecimal notation)
 
-Example:
+Type ``D``:
+
+* 1983-01-15
+* ``10001111 01111110 00001110``
+* ``8f 7e 0e``
+
+Type ``T``:
 
 * 18:25:12
 * ``10100001 00101101 00001100``
 * ``a1 2d 0c``
 
-
-Date + time (``DT``)
---------------------
-
-The *temporenc* type ``DT`` uses 5 bytes and is encoded using this format:
-
-====== ============
-Byte   Bit pattern
-====== ============
-1      ``00DDDDDD``
-2      ``DDDDDDDD``
-3      ``DDDDDDDT``
-4      ``TTTTTTTT``
-5      ``TTTTTTTT``
-====== ============
-
-Example:
+Type ``DT``:
 
 * 1983-01-15T18:25:12
 * ``00011110 11111100 00011101 00101101 00001100``
 * ``1e fc 1d 2d 0c``
 
-
-Date + time + time zone (``DTZ``)
----------------------------------
-
-The *temporenc* type ``DTZ`` uses 6 bytes and is encoded using this format:
-
-====== ============
-Byte   Bit pattern
-====== ============
-1      ``110DDDDD``
-2      ``DDDDDDDD``
-3      ``DDDDDDDD``
-4      ``TTTTTTTT``
-5      ``TTTTTTTT``
-6      ``TZZZZZZZ``
-====== ============
-
-Example:
+Type ``DTZ``:
 
 * 1983-01-15T18:25:12+01:00
 * ``11001111 01111110 00001110 10010110 10000110 01000100``
 * ``cf 7e 0e 96 86 44``
 
-
-Date + time (with sub-second precision) (``DTS``)
--------------------------------------------------
-
-TODO
-
-Date + time (with sub-second precision) + time zone (``DTSZ``)
---------------------------------------------------------------
-
-TODO
 
 
 Questions and answers
