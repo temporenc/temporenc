@@ -493,5 +493,11 @@ Questions and answers
 
 * Who came up with this format?
 
-  *Temporenc* was devised by `Wouter Bolsterlee
-  <https://github.com/wbolster/>`_. Do get in touch if you feel like it!
+  *Temporenc* was created by `Wouter Bolsterlee
+  <https://github.com/wbolster/>`_.
+
+* How can I contribute to *temporenc*?
+
+  *Temporenc* is maintained in the `temporenc repository
+  <https://github.com/wbolster/temporenc>`_ on Github. Do get in touch if you
+  feel like it!
