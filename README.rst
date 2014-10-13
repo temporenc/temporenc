@@ -129,7 +129,8 @@ string ``01101``.
 Date component
 --------------
 
-Dates always use 21 bits, divided in three groups (left-to-right):
+The date component (``D``) always use 21 bits, divided in three groups
+(left-to-right):
 
 * **Year** (12 bits)
 
@@ -163,7 +164,8 @@ month, day       01-15      ``111111111111`` ``0000``  ``01110``
 Time component
 --------------
 
-Times always use 17 bits, divided in three groups (left-to-right):
+The time component (``T``) always use 17 bits, divided in three groups
+(left-to-right):
 
 * **Hour** (5 bits)
 
@@ -194,30 +196,33 @@ hour, minute         18:25    ``10010``  ``110100`` ``111111``
 Sub-second precision time component
 -----------------------------------
 
-Sub-second time precision is expressed as either milliseconds (ms), microseconds
-(µs), or nanoseconds (ns). Each precision requires a different number of bits,
-indicated by a 2-bit precision tag at the front of the encoded value.
+The sub-second time precision component (``S``) is expressed as either
+milliseconds (ms), microseconds (µs), or nanoseconds (ns). Each precision
+requires a different number of bits of storage space. This means that unlike the
+other components, this component uses a variable number of bits, indicated by a
+2-bit precision tag, referred to as ``P``.
 
-* **Milliseconds** (12 bits)
+* **Milliseconds** (10 bits value, 2 bits tag)
 
-  An integer between 0–999 (both inclusive) represented as 10 bits, preceded by
-  the precision tag ``00``.
+  An integer between 0–999 (both inclusive) represented as 10 bits.
+  The precision tag ``P`` is ``00``.
 
-* **Microseconds** (22 bits)
+* **Microseconds** (20 bits value, 2 bits tag)
 
-  An integer between 0–999999 (both inclusive) represented as 20 bits, preceded
-  by the precision tag ``01``.
+  An integer between 0–999999 (both inclusive) represented as 20 bits.
+  The precision tag ``P`` is ``01``.
 
-* **Nanoseconds** (32 bits)
+* **Nanoseconds** (30 bits value, 2 bits tag)
 
-  An integer between 0–999999999 (both inclusive) represented as 30 bits,
-  preceded by the precision tag ``10``.
+  An integer between 0–999999999 (both inclusive) represented as 30 bits.
+  The precision tag ``P`` is ``10``.
 
-* **No sub-second precision** (2 bits)
+* **No sub-second precision** (0 bits value, 2 bits tag)
 
-  Only the precision tag ``11``. Note that if no sub-second precision time
-  component is required, using a ``temporenc`` type that does not include this
-  component at all is more efficient, e.g. by using ``DTZ`` instead of ``DTSZ``.
+  The precision tag ``P`` is ``11``, and no additional information is encoded.
+  Note that if no sub-second precision time component is required, using a
+  ``temporenc`` type that does not include this component at all is more space
+  efficient, e.g. by using ``DTZ`` instead of ``DTSZ``.
 
 Examples:
 
@@ -234,7 +239,7 @@ none         (not set)    ``11``        (nothing)
 Time zone component
 -------------------
 
-Time zone information always uses 7 bits. The UTC offset of the time zone
+Time zone component (``Z``) always uses 7 bits. The UTC offset of the time zone
 (usually written as ±HH:MM) is expressed as the number of 15 minute increments
 from UTC, with the constant 64 added to it to ensure the value is a positive
 integer in the range 0–126 (both inclusive). The special value 127 (``0x7f``)
