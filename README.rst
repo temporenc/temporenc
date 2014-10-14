@@ -130,18 +130,18 @@ The date component (``D``) always uses 21 bits, divided in three groups
 
 * **Year** (12 bits)
 
-  An integer between 0–4094 (both inclusive); the special value 4095 (``0xfff``)
-  means no value is set.
+  An integer in the range 0–4094 (both inclusive); the special value 4095
+  (``0xfff``) means no value is set.
 
 * **Month** (4 bits)
 
-  An integer between 0–11 (both inclusive); the special value 15 (``0xf``) means
-  no value is set. The first month (January) is encoded as 0, February as 1, and
-  so on. Note that this is off-by-one compared to human month numbering.
+  An integer in the range 0–11 (both inclusive); the special value 15 (``0xf``)
+  means no value is set. The first month (January) is encoded as 0, February as
+  1, and so on. Note that this is off-by-one compared to human month numbering.
 
 * **Day of month** (5 bits)
 
-  An integer between 0–30 (both inclusive); the special value 31 (``0x1f``)
+  An integer in the range 0–30 (both inclusive); the special value 31 (``0x1f``)
   means no value is set. The first day of the month is encoded as 0, the next as
   1. Note that this is off-by-one compared to human day numbering.
 
@@ -165,17 +165,17 @@ The time component (``T``) always uses 17 bits, divided in three groups
 
 * **Hour** (5 bits)
 
-  An integer between 0–23 (both inclusive); the special value 31 (``0x1f``)
+  An integer in the range 0–23 (both inclusive); the special value 31 (``0x1f``)
   means no value is set.
 
 * **Minute** (6 bits)
 
-  An integer between 0–59 (both inclusive); the special value 63 (``0x3f``)
+  An integer in the range 0–59 (both inclusive); the special value 63 (``0x3f``)
   means no value is set.
 
 * **Second** (6 bits)
 
-  An integer between 0–60 (both inclusive); the special value 63 (``0x3f``)
+  An integer in the range 0–60 (both inclusive); the special value 63 (``0x3f``)
   means no value is set. Note that the value 60 is supported because it is
   required to correctly represent leap seconds.
 
@@ -200,17 +200,17 @@ other components, this component uses a variable number of bits, indicated by a
 
 * **Milliseconds** (10 bits value, 2 bits tag)
 
-  An integer between 0–999 (both inclusive) represented as 10 bits.
-  The precision tag ``P`` is ``00``.
+  An integer in the range 0–999 (both inclusive) represented as 10 bits. The
+  precision tag ``P`` is ``00``.
 
 * **Microseconds** (20 bits value, 2 bits tag)
 
-  An integer between 0–999999 (both inclusive) represented as 20 bits.
-  The precision tag ``P`` is ``01``.
+  An integer in the range 0–999999 (both inclusive) represented as 20 bits. The
+  precision tag ``P`` is ``01``.
 
 * **Nanoseconds** (30 bits value, 2 bits tag)
 
-  An integer between 0–999999999 (both inclusive) represented as 30 bits.
+  An integer in the range 0–999999999 (both inclusive) represented as 30 bits.
   The precision tag ``P`` is ``10``.
 
 * **No sub-second precision** (0 bits value, 2 bits tag)
