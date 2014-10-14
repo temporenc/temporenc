@@ -466,7 +466,9 @@ Questions and answers
 * Why the name *temporenc*?
 
   *Temporenc* is a contraction of the words *tempore* (declension of Latin
-  *tempus*, meaning *time*) and *enc* (abbreviation for *encoding*).
+  *tempus*, meaning *time*) and *enc* (abbreviation for *encoding*). The name
+  *temporenc* should only be capitalized when normal spelling rules dictate so,
+  e.g. at the start of a sentence.
 
 * Why another format when there are already so many of them?
 
