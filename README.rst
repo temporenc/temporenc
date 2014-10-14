@@ -136,8 +136,8 @@ The date component (``D``) always uses 21 bits, divided in three groups
 * **Month** (4 bits)
 
   An integer in the range 0–11 (both inclusive); the special value 15 means no
-  value is set. The first month (January) is encoded as 0, February as 1, and so
-  on. Note that this is off-by-one compared to human month numbering.
+  value is set. January is encoded as 0, February as 1, and so on. Note that
+  this is off-by-one compared to human month numbering.
 
 * **Day of month** (5 bits)
 
