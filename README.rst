@@ -24,10 +24,10 @@ Features
 * **Compact**
 
   Encoded values have a variable size between 3 and 10 bytes, depending on the
-  components being included. For example, an encoded date uses 3 bytes, and an
-  encoded time also takes 3 bytes, but an encoded date with time uses only 5
-  bytes. At the other extreme, it takes only 10 bytes to encode a date with time
-  using nanosecond precision and a time zone.
+  components being included. For example, an encoded date uses 3 bytes, an
+  encoded time also takes 3 bytes, and an encoded date with time uses 5 bytes.
+  At the other extreme, it takes only 10 bytes to encode a date with time using
+  nanosecond precision and a time zone.
 
 * **Self-contained**
 
