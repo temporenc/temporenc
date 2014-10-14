@@ -2,18 +2,10 @@
 temporenc
 =========
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-serialization format for dates and times
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-*Temporenc*  is a serialization format to represent date and time information as
-raw byte strings.
+**Temporenc** is a comprehensive binary encoding format for dates and times.
 
 Features
 ========
-
-*Temporenc* has the following characteristics:
 
 * **Flexible**
 
@@ -23,21 +15,21 @@ Features
 
 * **Compact**
 
-  Encoded values have a variable size between 3 and 10 bytes, depending on the
-  components being included. For example, an encoded date uses 3 bytes, an
+  *Temporenc* values have a variable size between 3 and 10 bytes, depending on
+  the components being included. For example, an encoded date uses 3 bytes, an
   encoded time also takes 3 bytes, and an encoded date with time uses 5 bytes.
   At the other extreme, it takes only 10 bytes to encode a date with time using
   nanosecond precision and a time zone.
 
 * **Self-contained**
 
-  Encoded values contain all information needed for decoding. Consuming
+  *Temporenc* values contain all information needed for decoding. Consuming
   applications do not have to know which format was used for encoding, since
   this can be discovered by looking at the first byte of the value.
 
 * **Sortable**
 
-  Encoded values of the same *type* (such as date/time without timezone) can be
+  *Temporenc* values of the same *type* (such as date/time without timezone) can be
   sorted using normal lexicographical sorting routines on the encoded byte
   strings, with earlier dates sorting first, and with missing values sorting
   last. Among other benefits, this makes *temporenc* values very suited for use
@@ -45,13 +37,13 @@ Features
 
 * **Time zone support**
 
-  Time zone information is encoded using an UTC offset with 15 minute
+  *Temporenc* supports time zones using an UTC offset with 15 minute
   granularity, allowing any time zone in use in the world to be represented.
 
 * **Sub-second precision**
 
-  Time information can optionally have sub-second precision using either
-  milliseconds, microseconds, or nanoseconds.
+  Time information in *temporenc* values can optionally have sub-second
+  precision using either milliseconds, microseconds, or nanoseconds.
 
 
 Components and types
