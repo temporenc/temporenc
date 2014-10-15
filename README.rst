@@ -233,6 +233,11 @@ increments from UTC, with the constant 64 added to it to ensure the value is a
 positive integer in the range 0–126 (both inclusive). The special value 127
 means no value is set.
 
+When a *temporenc* type with a time zone component is used, the date (``D``) and
+time (``T``) components must be converted to their UTC equivalent, and stored in
+that form. This ensures that the encoded values can be sorted properly,
+regardless of their time zone.
+
 Examples:
 
 ========== ================ ============= =============
@@ -311,6 +316,8 @@ The various *temporenc types* are encoded like this:
       110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT
       TTTTTTTT TZZZZZZZ
 
+  Note that the ``D`` and ``T`` components must be in UTC format.
+
 * **Date + time (with sub-second precision)** (``DTS``)
 
   The *type tag* is ``01``, followed by the precision tag ``P``.
@@ -342,6 +349,8 @@ The various *temporenc types* are encoded like this:
 
   The *type tag* is ``111``, followed by the precision tag ``P``.
   Values are zero-padded on the right up to the first byte boundary.
+
+  Note that the ``D`` and ``T`` components must be in UTC format.
 
   For millisecond (ms) precision, encoded values use 8 bytes in this format::
 
@@ -404,8 +413,10 @@ notation).
   ::
 
     1983-01-15T18:25:12+01:00
-    11001111 01111110 00001110 10010011 00100110 01000100
-    cf 7e 0e 93 26 44
+    11001111 01111110 00001110 10001011 00100110 01000100
+    cf 7e 0e 8b 26 44
+
+  Note that the value is stored as UTC.
 
 * **Date + time (with sub-second precision)** (``DTS``)
 
@@ -438,27 +449,28 @@ notation).
   Millisecond (ms) precision::
 
     1983-01-15T18:25:12.123+01:00
-    11100011 11011111 10000011 10100100 11001001 10000011 11011100 01000000
-    e3 df 83 a4 c9 83 dc 40
+    11100011 11011111 10000011 10100010 11001001 10000011 11011100 01000000
+    e3 df 83 a2 c9 83 dc 40
 
   Microsecond (µs) precision::
 
     1983-01-15T18:25:12.123456+01:00
-    11101011 11011111 10000011 10100100 11001001 10000011 11000100 10000001 00010000
-    eb df 83 a4 c9 83 c4 81 10
+    11101011 11011111 10000011 10100010 11001001 10000011 11000100 10000001 00010000
+    eb df 83 a2 c9 83 c4 81 10
 
   Nanosecond (ns) precision::
 
     1983-01-15T18:25:12.123456789+01:00
-    11110011 11011111 10000011 10100100 11001001 10000011 10101101 11100110 10001010 11000100
-    f3 df 83 a4 c9 83 ad e6 8a c4
+    11110011 11011111 10000011 10100010 11001001 10000011 10101101 11100110 10001010 11000100
+    f3 df 83 a2 c9 83 ad e6 8a c4
 
   No sub-second precision::
 
     1983-01-15T18:25:12+01:00
     11111011 11011111 10000011 10100100 11001001 10010001 00000000
-    fb df 83 a4 c9 91 00
+    fb df 83 a2 c9 91 00
 
+  Note that the values are stored as UTC.
 
 Questions and answers
 =====================
