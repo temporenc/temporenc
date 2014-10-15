@@ -9,7 +9,7 @@ Features
 
 * **Flexible**
 
-  *Temporenc* support any combination of a date, a time, and a timezone. All
+  *Temporenc* support any combination of a date, a time, and a time zone. All
   fields are optional. For example, it is possible to encode a year and a day
   without a month.
 
@@ -29,11 +29,11 @@ Features
 
 * **Sortable**
 
-  *Temporenc* values of the same *type* (such as date/time without timezone) can be
-  sorted using normal lexicographical sorting routines on the encoded byte
-  strings, with earlier dates sorting first, and with missing values sorting
-  last. Among other benefits, this makes *temporenc* values very suited for use
-  as (partial) keys in key/value stores.
+  *Temporenc* values of the same *type* (such as date/time without time zone)
+  can be sorted using normal lexicographical sorting routines on the encoded
+  byte strings, with earlier dates sorting first, and with missing values
+  sorting last. Among other benefits, this makes *temporenc* values very suited
+  for use as (partial) keys in key/value stores.
 
 * **Time zone support**
 
