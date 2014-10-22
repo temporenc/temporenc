@@ -385,7 +385,7 @@ encoded value as a bit string, and the encoded value as bytes (hexadecimal
 notation).
 
 * **Date** (``D``)
-  
+
   ::
 
     1983-01-15
@@ -393,7 +393,7 @@ notation).
     8f 7e 0e
 
 * **Time** (``T``)
-  
+
   ::
 
     18:25:12
@@ -401,7 +401,7 @@ notation).
     a1 26 4c
 
 * **Date + time** (``DT``)
-  
+
   ::
 
     1983-01-15T18:25:12
@@ -409,7 +409,7 @@ notation).
     1e fc 1d 26 4c
 
 * **Date + time + time zone** (``DTZ``)
-  
+
   ::
 
     1983-01-15T18:25:12+01:00
