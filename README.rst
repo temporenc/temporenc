@@ -472,6 +472,19 @@ notation).
 
   Note that the values are stored as UTC.
 
+
+Implementations
+===============
+
+* Python library for *temporenc*: `PyPI page
+  <https://pypi.python.org/pypi/temporenc>`_, `documentation
+  <http://temporenc.readthedocs.org/>`_, and `source code
+  <https://github.com/wbolster/temporenc-python>`_
+
+
+Implementations for other languages are most welcome!
+
+
 Questions and answers
 =====================
 
