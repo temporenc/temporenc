@@ -2,48 +2,69 @@
 temporenc
 =========
 
-**Temporenc** is a comprehensive binary encoding format for dates and times.
+comprehensive binary encoding format for dates and times
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Features (short)
+================
+
+Flexible
+--------
+
+Temporenc encodes **date**, **time**, **time zone**, and **sub-second
+precision** information. You can use just what you need, since **each field is
+optional**.
+
+Compact
+-------
+
+Temporenc uses a **compact binary encoding scheme**. Encoded values are
+**between 3 and 10 bytes**. Values of the **same type** always have the **same
+size**.
+
+Machine-friendly
+----------------
+
+Encoded values are **self-describing**, and can be consumed from a **stream
+without framing**. Lexicographically **sorting encoded values** of the same type
+puts the values in **chronological order**.
+
 
 Features
 ========
 
-* **Flexible**
+Flexible
+--------
 
-  *Temporenc* support any combination of a date, a time, and a time zone. All
-  fields are optional. For example, it is possible to encode a year and a day
-  without a month.
+*Temporenc* supports any combination of a **date**, a **time**, and a **time
+zone**. **All fields are optional**, e.g. it is possible to encode a year and a
+month without a day.
 
-* **Compact**
+Times can have **sub-second precision** using either milliseconds, microseconds,
+or nanoseconds. **Time zones** use an UTC offset with 15 minute granularity,
+allowing any time zone in use in the world to be represented.
 
-  *Temporenc* values have a variable size between 3 and 10 bytes, depending on
-  the components being included. For example, an encoded date uses 3 bytes, an
-  encoded time also takes 3 bytes, and an encoded date with time uses 5 bytes.
-  At the other extreme, it takes only 10 bytes to encode a date with time using
-  nanosecond precision and a time zone.
+Compact
+-------
 
-* **Self-contained**
+*Temporenc* values have a **variable size** between 3 and 10 bytes, depending on
+the components being included. Values of the same type always have the same
+size. For example, an encoded date uses 3 bytes, an encoded time also takes 3
+bytes, and an encoded date with time uses 5 bytes. At the other extreme, it
+takes only 10 bytes to encode a date with time using nanosecond precision and a
+time zone.
 
-  *Temporenc* values contain all information needed for decoding. Consuming
-  applications do not have to know which format was used for encoding, since
-  this can be discovered by looking at the first byte of the value.
+Machine-friendly
+----------------
 
-* **Sortable**
-
-  *Temporenc* values of the same *type* (such as date/time without time zone)
-  can be sorted using normal lexicographical sorting routines on the encoded
-  byte strings, with earlier dates sorting first, and with missing values
-  sorting last. Among other benefits, this makes *temporenc* values very suited
-  for use as (partial) keys in key/value stores.
-
-* **Time zone support**
-
-  *Temporenc* supports time zones using an UTC offset with 15 minute
-  granularity, allowing any time zone in use in the world to be represented.
-
-* **Sub-second precision**
-
-  Time information in *temporenc* values can optionally have sub-second
-  precision using either milliseconds, microseconds, or nanoseconds.
+*Temporenc* values are **self-describing**; consuming applications do not need
+to know which format was used for encoding. Since all information needed for
+decoding can be derived from the **first byte**, values can be **read from
+streams** without framing. **Encoded values** of the same type can be **sorted**
+using normal lexicographical sorting routines, i.e. without decoding. Earlier
+dates sort first, missing values sort last. This makes *temporenc* values very
+suited for use in search trees or as as (partial) keys in key/value stores.
 
 
 Components and types
