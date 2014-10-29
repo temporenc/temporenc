@@ -246,6 +246,30 @@ blockquote cite:before {
     content: "-- "
 }
 
+/* Tables */
+table {
+    border: 0;
+}
+
+table thead {
+    border-bottom: 1px solid #ddd;
+}
+
+table tbody tr:nth-child(2n) {
+    background-color: #f8f8f8;
+}
+
+table td, table th {
+    border: 0;
+    vertical-align: top;
+    padding: 5px 10px;
+}
+
+table th {
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Images */
 .overflow-image {
     margin-top: -65px;
