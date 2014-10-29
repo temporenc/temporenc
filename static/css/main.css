@@ -195,14 +195,22 @@ em {
     font-weight: 300;
 }
 
-pre {
-    background: #ebebeb;
-    border: none;
-    font-family: "Monaco";
-    font-size: 16px;
+pre, tt {
+    background: #f8f8f8;
+    font-family: "Monaco", "DejaVu Sans Mono", monospace;
     color: #666;
+}
+
+pre {
+    border: none;
     padding: 20px;
+    font-size: 16px;
     line-height: 28px;
+}
+
+tt {
+    padding: 2px;
+    font-size: 75%;
 }
 
 small {
