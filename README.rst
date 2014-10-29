@@ -351,39 +351,52 @@ next subsection, is as follows:
 * Return the bit array as a byte string.
 
 The remainder of this section specifies the exact byte layout for each encoded
-*temporenc* type.
+*temporenc* type, including examples showing both bit strings and bytes
+(hexadecimal notation).
 
 Type ``D`` (date)
 """""""""""""""""
 
 The *type tag* is ``100``. Encoded values use 3 bytes in this format::
 
-    100DDDDD DDDDDDDD DDDDDDDD
+  100DDDDD DDDDDDDD DDDDDDDD
+
+Example: *1983-01-15* is encoded as ``10001111 01111110 00001110`` (bits) or
+``8f 7e 0e`` (hex bytes).
 
 Type ``T`` (time)
 """""""""""""""""
 
 The *type tag* is ``1010000``. Encoded values use 3 bytes in this format::
 
-    1010000T TTTTTTTT TTTTTTTT
+  1010000T TTTTTTTT TTTTTTTT
+
+Example: *18:25:12* is encoded as ``10100001 00100110 01001100`` (bits) or ``a1
+26 4c`` (hex bytes).
 
 Type ``DT`` (date + time)
 """""""""""""""""""""""""
 
 The *type tag* is ``00``. Encoded values use 5 bytes in this format::
 
-    00DDDDDD DDDDDDDD DDDDDDDT TTTTTTTT
-    TTTTTTTT
+  00DDDDDD DDDDDDDD DDDDDDDT TTTTTTTT
+  TTTTTTTT
+
+Example: *1983-01-15T18:25:12* is encoded as ``00011110 11111100 00011101
+00100110 01001100`` (bits) or ``1e fc 1d 26 4c`` (hex bytes).
 
 Type ``DTZ`` (date + time + time zone)
 """"""""""""""""""""""""""""""""""""""
 
 The *type tag* is ``110``. Encoded values use 6 bytes in this format::
 
-    110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT
-    TTTTTTTT TZZZZZZZ
+  110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT
+  TTTTTTTT TZZZZZZZ
 
-Note that the ``D`` and ``T`` components must be in UTC format.
+Note that the ``D`` and ``T`` components must be stored as UTC.
+
+Example: *1983-01-15T18:25:12+01:00* is encoded as ``11001111 01111110 00001110
+10001011 00100110 01000100`` (bits) or ``cf 7e 0e 8b 26 44`` (hex bytes).
 
 Type ``DTS`` (date + time with sub-second precision)
 """"""""""""""""""""""""""""""""""""""""""""""""""""
@@ -413,13 +426,29 @@ bytes in this format::
   01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
   TTTTTTTT TT000000
 
+Example: *1983-01-15T18:25:12.123* (millisecond precision) is encoded as
+``01000111 10111111 00000111 01001001 10010011 00000111 10110000`` (bits) or
+``47 bf 07 49 93 07 b0`` (hex bytes).
+
+Example: *1983-01-15T18:25:12.123456* (microsecond precision) is encoded as
+``01010111 10111111 00000111 01001001 10010011 00000111 10001001 00000000``
+(bits) or ``57 bf 07 49 93 07 89 00`` (hex bytes).
+
+Example: *1983-01-15T18:25:12.123456789* (nanosecond precision) is encoded as
+``01100111 10111111 00000111 01001001 10010011 00000111 01011011 11001101
+00010101`` (bits) or ``67 bf 07 49 93 07 5b cd 15`` (hex bytes).
+
+Example: *1983-01-15T18:25:12* (no precision) is encoded as ``01110111 10111111
+00000111 01001001 10010011 00000000`` (bits) or ``77 bf 07 49 93 00`` (hex
+bytes).
+
 Type ``DTSZ`` (date + time with sub-second precision + time zone)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 The *type tag* is ``111``, followed by the precision tag ``P``.
 Values are zero-padded on the right up to the first byte boundary.
 
-Note that the ``D`` and ``T`` components must be in UTC format.
+Note that the ``D`` and ``T`` components must be stored as UTC.
 
 For millisecond (ms) precision, encoded values use 8 bytes in this format::
 
@@ -444,102 +473,21 @@ bytes in this format::
   111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
   TTTTTTTT TTTZZZZZ ZZ000000
 
+Example: *1983-01-15T18:25:12.123+01:00* (millisecond precision) is encoded as
+``11100011 11011111 10000011 10100010 11001001 10000011 11011100 01000000``
+(bits) or ``e3 df 83 a2 c9 83 dc 40`` (hex bytes).
 
-Examples
-========
+Example: *1983-01-15T18:25:12.123456+01:00* (microsecond precision) is encoded
+as ``11101011 11011111 10000011 10100010 11001001 10000011 11000100 10000001
+00010000`` (bits) or ``eb df 83 a2 c9 83 c4 81 10`` (hex bytes).
 
-This section provides encoding examples for all *temporenc types*. Each example
-shows the human-readable value (``YYYY-MM-DDTHH:MM:SS.sssssssss±hh:mm``), the
-encoded value as a bit string, and the encoded value as bytes (hexadecimal
-notation).
+Example: *1983-01-15T18:25:12.123456789+01:00* (nanosecond precision) is encoded
+as ``11110011 11011111 10000011 10100010 11001001 10000011 10101101 11100110
+10001010 11000100`` (bits) or ``f3 df 83 a2 c9 83 ad e6 8a c4`` (hex bytes).
 
-* **Date** (``D``)
-
-  ::
-
-    1983-01-15
-    10001111 01111110 00001110
-    8f 7e 0e
-
-* **Time** (``T``)
-
-  ::
-
-    18:25:12
-    10100001 00100110 01001100
-    a1 26 4c
-
-* **Date + time** (``DT``)
-
-  ::
-
-    1983-01-15T18:25:12
-    00011110 11111100 00011101 00100110 01001100
-    1e fc 1d 26 4c
-
-* **Date + time + time zone** (``DTZ``)
-
-  ::
-
-    1983-01-15T18:25:12+01:00
-    11001111 01111110 00001110 10001011 00100110 01000100
-    cf 7e 0e 8b 26 44
-
-  Note that the value is stored as UTC.
-
-* **Date + time (with sub-second precision)** (``DTS``)
-
-  Millisecond (ms) precision::
-
-    1983-01-15T18:25:12.123
-    01000111 10111111 00000111 01001001 10010011 00000111 10110000
-    47 bf 07 49 93 07 b0
-
-  Microsecond (µs) precision::
-
-    1983-01-15T18:25:12.123456
-    01010111 10111111 00000111 01001001 10010011 00000111 10001001 00000000
-    57 bf 07 49 93 07 89 00
-
-  Nanosecond (ns) precision::
-
-    1983-01-15T18:25:12.123456789
-    01100111 10111111 00000111 01001001 10010011 00000111 01011011 11001101 00010101
-    67 bf 07 49 93 07 5b cd 15
-
-  No sub-second precision::
-
-    1983-01-15T18:25:12
-    01110111 10111111 00000111 01001001 10010011 00000000
-    77 bf 07 49 93 00
-
-* **Date + time (with sub-second precision) + time zone** (``DTSZ``)
-
-  Millisecond (ms) precision::
-
-    1983-01-15T18:25:12.123+01:00
-    11100011 11011111 10000011 10100010 11001001 10000011 11011100 01000000
-    e3 df 83 a2 c9 83 dc 40
-
-  Microsecond (µs) precision::
-
-    1983-01-15T18:25:12.123456+01:00
-    11101011 11011111 10000011 10100010 11001001 10000011 11000100 10000001 00010000
-    eb df 83 a2 c9 83 c4 81 10
-
-  Nanosecond (ns) precision::
-
-    1983-01-15T18:25:12.123456789+01:00
-    11110011 11011111 10000011 10100010 11001001 10000011 10101101 11100110 10001010 11000100
-    f3 df 83 a2 c9 83 ad e6 8a c4
-
-  No sub-second precision::
-
-    1983-01-15T18:25:12+01:00
-    11111011 11011111 10000011 10100100 11001001 10010001 00000000
-    fb df 83 a2 c9 91 00
-
-  Note that the values are stored as UTC.
+Example: *1983-01-15T18:25:12+01:00* (no precision) is encoded as ``11111011
+11011111 10000011 10100100 11001001 10010001 00000000`` (bits) or ``fb df 83 a2
+c9 91 00`` (hex bytes).
 
 
 Implementations
