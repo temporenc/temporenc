@@ -1,2 +1,4 @@
+docutils
 Flask
 Frozen-Flask
+lxml
