@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{#- vim: set filetype=jinja: -#}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -46,12 +47,12 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               <li><a href="#home" class="smoothScroll">Home</a></li>
-              <li><a href="#about" class="smoothScroll">Features</a></li>
-              <li><a href="#services" class="smoothScroll">Design</a></li>
-              <li><a href="#team" class="smoothScroll">Encoding rules</a></li>
-              <li><a href="#portfolio" class="smoothScroll">Examples</a></li>
-              <li><a href="#blog" class="smoothScroll">Implementations</a></li>
-              <li><a href="#contact" class="smoothScroll">Questions &amp; answers</a></li>
+              {% for section in sections %}
+              <li>
+                <a href="#{{ section['id'] }}" class="smoothScroll">{{ section['title'] }}</a>
+              </li>
+              {% endfor %}
+
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -64,8 +65,8 @@
       <header class="clearfix">
         <h1 style="word-wrap: break-word;">
           <span class="icon icon-clock-2"></span><br>
-          {{ doc.title }}</h1>
-        <p>{{ doc.subtitle}}</p>
+          {{ title }}</h1>
+        <p>{{ subtitle}}</p>
       </header>	    
     </div><!-- /headerwrap -->
 
@@ -75,37 +76,38 @@
 
         <div class="col-lg-4 callout">
           <span class="icon icon-stack"></span>
-          <h2>{{ doc.features_short[0].title}} </h2>
-          {{ doc.features_short[0].body }}
+          <h2>{{ features_short[0].title}} </h2>
+          {{ features_short[0].body }}
         </div>
 
         <div class="col-lg-4 callout">
           <span class="icon icon-contract"></span>
-          <h2>{{ doc.features_short[1].title}} </h2>
-          {{ doc.features_short[1].body }}
+          <h2>{{ features_short[1].title}} </h2>
+          {{ features_short[1].body }}
         </div>
 
         <div class="col-lg-4 callout">
           <span class="icon icon-cogs"></span>
-          <h2>{{ doc.features_short[2].title}} </h2>
-          {{ doc.features_short[2].body }}
+          <h2>{{ features_short[2].title}} </h2>
+          {{ features_short[2].body }}
         </div>
 
       </div>
     </div>
 
-    <div class="container" id="about" name="about">
-      <div class="row white">
-        <h1 class="centered">WHAT IS TEMPORENC?</h1>
-        <div class="col-lg-8">
-          <p>{{ doc.body }}</p>
-        </div>
-        <div class="col-lg-4">
-          <p>Right</p>
+    {% for section in sections %}
+    <div class="container" id="{{ section['id'] }}" style="padding-top: 30px;">
+      <div class="row">
+        <h1 class="centered">{{ section['title'] }}</h1>
+        <hr>
+        <div class="col-lg-8 col-lg-offset-2">
+          {{ section['body'] }}
         </div>
       </div>
     </div>
+    {% endfor %}
 
+{#
     <!-- ==== ABOUT ==== -->
     <div class="container" id="about" name="about">
       <div class="row white">
@@ -491,9 +493,22 @@
 
     </div><!-- container -->
 
+#}
+
     <div id="footerwrap">
       <div class="container">
-        <h4>Created by <a href="http://blacktie.co">BlackTie.co</a> - Copyright 2014</h4>
+        {#
+        <h4>
+          The <em>temporenc</em> specification was created by <a
+          href="https://github.com/wbolster/">Wouter Bolsterlee</a>.
+        </h4>
+        #}
+        <p>
+          The visual design for this site is based on the
+          <a href="http://www.blacktie.co/demo/shield/">Shield</a>
+          theme by
+          <a href="http://blacktie.co">BlackTie.co</a>.
+        </p>
       </div>
     </div>
 
