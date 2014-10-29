@@ -150,41 +150,37 @@ Encoding rules
 ==============
 
 This section describes how the components and types of the *temporenc* model are
-encoded into a byte string. Encoding is done in two stages:
-
-* **Encoding individual components**
-
-  In the first stage, each component is encoded separately, resulting in an
-  array of bits. The rules for encoding components are the same for all *types*.
-
-  For representing numbers as bit strings, *temporenc* always uses unsigned
-  big-endian notation, e.g. encoding the number 13 into 5 bits results in the bit
-  string ``01101`` (8 + 4 + 1).
-
-* **Packing the encoded components together**
-
-  The second stage consists of packing the encoded components into the final
-  byte string. The exact packing format depends on the *type* in use.
+encoded into a byte string. Encoding is done in two stages: encoding individual
+components, followed by packing the encoded components together to construct the
+encoded value as a byte string.
 
 
+Encoding individual components
+------------------------------
+
+In the first stage, each component is encoded separately, resulting in an array
+of bits. The rules for encoding components are the same for all *types*. For
+representing numbers as bit strings, *temporenc* always uses unsigned big-endian
+notation, e.g. encoding the number 13 into 5 bits results in the bit string
+``01101`` (8 + 4 + 1).
 
 Date component (``D``)
-----------------------
+""""""""""""""""""""""
 
 The date component (``D``) always uses 21 bits, divided in three groups:
 
-* **Year** (12 bits)
+* Year (12 bits)
 
   An integer in the range 0–4094 (both inclusive); the special value 4095 means
   no value is set.
 
-* **Month** (4 bits)
+* Month (4 bits)
 
   An integer in the range 0–11 (both inclusive); the special value 15 means no
   value is set. January is encoded as 0, February as 1, and so on. Note that
   this is off-by-one compared to human month numbering.
 
-* **Day** (5 bits)
+* Day (5 bits)
 
   An integer in the range 0–30 (both inclusive); the special value 31 means no
   value is set. The first day of the month is encoded as 0, the next as 1. Note
@@ -203,21 +199,21 @@ month, day       01-15      ``111111111111`` ``0000``  ``01110``
 
 
 Time component (``T``)
-----------------------
+""""""""""""""""""""""
 
 The time component (``T``) always uses 17 bits, divided in three groups:
 
-* **Hour** (5 bits)
+* Hour (5 bits)
 
   An integer in the range 0–23 (both inclusive); the special value 31 means no
   value is set.
 
-* **Minute** (6 bits)
+* Minute (6 bits)
 
   An integer in the range 0–59 (both inclusive); the special value 63 means no
   value is set.
 
-* **Second** (6 bits)
+* Second (6 bits)
 
   An integer in the range 0–60 (both inclusive); the special value 63 means no
   value is set. Note that the value 60 is supported because it is required to
@@ -234,7 +230,7 @@ hour, minute         18:25    ``10010``  ``011001`` ``111111``
 
 
 Sub-second precision time component (``S``)
--------------------------------------------
+"""""""""""""""""""""""""""""""""""""""""""
 
 The sub-second time precision component (``S``) is expressed as either
 milliseconds (ms), microseconds (µs), or nanoseconds (ns). Each precision
@@ -242,22 +238,22 @@ requires a different number of bits of storage space. This means that unlike the
 other components, this component uses a variable number of bits, indicated by a
 2-bit precision tag, referred to as ``P``.
 
-* **Milliseconds** (10 bits value, 2 bits tag, 12 bits in total)
+* Milliseconds (10 bits value, 2 bits tag, 12 bits in total)
 
   An integer in the range 0–999 (both inclusive) represented as 10 bits. The
   precision tag ``P`` is ``00``.
 
-* **Microseconds** (20 bits value, 2 bits tag, 22 bits in total)
+* Microseconds (20 bits value, 2 bits tag, 22 bits in total)
 
   An integer in the range 0–999999 (both inclusive) represented as 20 bits. The
   precision tag ``P`` is ``01``.
 
-* **Nanoseconds** (30 bits value, 2 bits tag, 32 bits in total)
+* Nanoseconds (30 bits value, 2 bits tag, 32 bits in total)
 
   An integer in the range 0–999999999 (both inclusive) represented as 30 bits.
   The precision tag ``P`` is ``10``.
 
-* **No sub-second precision** (0 bits value, 2 bits tag, 2 bits in total)
+* No sub-second precision (0 bits value, 2 bits tag, 2 bits in total)
 
   The precision tag ``P`` is ``11``, and no additional information is encoded.
   Note that if no sub-second precision time component is required, using a
@@ -277,7 +273,7 @@ none         (not set)    ``11``        (nothing)
 
 
 Time zone component (``Z``)
----------------------------
+"""""""""""""""""""""""""""
 
 The time zone component (``Z``) always uses 7 bits. When a *temporenc* type with
 a time zone component is used, the date (``D``) and time (``T``) components are
@@ -303,130 +299,150 @@ Offset     Offset           Encoded value Encoded value
 ========== ================ ============= =============
 
 
+
 Packing encoded components
 --------------------------
 
-The exact packing format depends on the *type*. Each *type* is therefor assigned
-a unique *type tag*, which is a short bit string (see below) at the beginning of
-the encoded value that is used for identification purposes. The steps for
-creating the final output are:
+The second encoding stage is about packing the encoded components into the final
+byte string. An encoded *temporenc* value is basically a concatenation of the
+bit strings for each component. The exact packing format depends on the *type*,
+which means each *type* has its own bit packing rules. Each *type* is assigned a
+unique *type tag*, which is a short identifying bit string included in the first
+byte of the encoded value. The advantages of this approach are:
 
-* Start with an empty byte string.
-* Concatenate the *type tag*.
-* Concatenate the sub-second precision tag ``P`` (if applicable).
-* Concatenate all included components (this depends on the *type*).
-* Pad the last byte with zeroes to align it to a complete byte (if needed).
-
-The table below shows the how the components are packed for each *type*:
-
-======== =========== ===== ===== ===== ===== ===== ==============
-type     type tag    ``P`` ``D`` ``T`` ``S`` ``Z`` padding
-======== =========== ===== ===== ===== ===== ===== ==============
-``D``    ``100``             ✓
-``T``    ``1010000``               ✓
-``DT``   ``00``              ✓     ✓
-``DTZ``  ``110``             ✓     ✓           ✓
-``DTS``  ``01``        ✓     ✓     ✓     ✓         only if needed
-``DTSZ`` ``111``       ✓     ✓     ✓     ✓     ✓   only if needed
-======== =========== ===== ===== ===== ===== ===== ==============
-
-The advantages of this approach are:
+* Encoded values are self-describing.
 
 * The total size of encoded values is very small.
 
 * Encoded values of the same *type* can be sorted lexicographically.
 
-* Since both the *type tag* and the precision tag ``P`` (if any) always fit into
-  the first byte, a decoder only needs the first byte to determine the total
-  size and layout of the complete value, which is useful for decoding streams of
-  data without the need for framing.
+* A decoder needs only the first byte to determine the total size and layout of
+  the complete value, which allows for decoding values from a stream without the
+  need for framing (specifying the length).
 
-The various *temporenc types* are encoded like this:
+The table below specifies the *type tag* for each *type*, and the order used for
+the concatenation of the encoded components:
 
-* **Date** (``D``)
+======== =========== ===== ===== ===== ===== ===== ==============
+Type     Type tag    ``P`` ``D`` ``T`` ``S`` ``Z`` Padding
+======== =========== ===== ===== ===== ===== ===== ==============
+``D``    ``100``             ✓
+``T``    ``1010000``               ✓
+``DT``   ``00``              ✓     ✓
+``DTZ``  ``110``             ✓     ✓           ✓
+``DTS``  ``01``        ✓     ✓     ✓     ✓         ✓ (if needed)
+``DTSZ`` ``111``       ✓     ✓     ✓     ✓     ✓   ✓ (if needed)
+======== =========== ===== ===== ===== ===== ===== ==============
 
-  The *type tag* is ``100``. Encoded values use 3 bytes in this format::
+The general approach for creating the final byte strings, as detailed in the
+next subsection, is as follows:
 
-      100DDDDD DDDDDDDD DDDDDDDD
+* Start with an empty bit array.
 
-* **Time** (``T``)
+* Concatenate the *type tag*.
 
-  The *type tag* is ``1010000``. Encoded values use 3 bytes in this format::
+* Concatenate each included component, including the sub-second precision tag
+  ``P`` (if any).
 
-      1010000T TTTTTTTT TTTTTTTT
+* Pad the bit array with zeroes to align it to the next multiple of 8, i.e.
+  to the next byte boundary (only for *types* with sub-second precision, and
+  only if needed).
 
-* **Date + time** (``DT``)
+* Return the bit array as a byte string.
 
-  The *type tag* is ``00``. Encoded values use 5 bytes in this format::
+The remainder of this section specifies the exact byte layout for each encoded
+*temporenc* type.
 
-      00DDDDDD DDDDDDDD DDDDDDDT TTTTTTTT
-      TTTTTTTT
+Type ``D`` (date)
+"""""""""""""""""
 
-* **Date + time + time zone** (``DTZ``)
+The *type tag* is ``100``. Encoded values use 3 bytes in this format::
 
-  The *type tag* is ``110``. Encoded values use 6 bytes in this format::
+    100DDDDD DDDDDDDD DDDDDDDD
 
-      110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT
-      TTTTTTTT TZZZZZZZ
+Type ``T`` (time)
+"""""""""""""""""
 
-  Note that the ``D`` and ``T`` components must be in UTC format.
+The *type tag* is ``1010000``. Encoded values use 3 bytes in this format::
 
-* **Date + time (with sub-second precision)** (``DTS``)
+    1010000T TTTTTTTT TTTTTTTT
 
-  The *type tag* is ``01``, followed by the precision tag ``P``.
-  Values are zero-padded on the right up to the first byte boundary.
+Type ``DT`` (date + time)
+"""""""""""""""""""""""""
 
-  For millisecond (ms) precision, encoded values use 7 bytes in this format::
+The *type tag* is ``00``. Encoded values use 5 bytes in this format::
 
-    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
-    TTTTTTTT TTSSSSSS SSSS0000
+    00DDDDDD DDDDDDDD DDDDDDDT TTTTTTTT
+    TTTTTTTT
 
-  For microsecond (µs) precision, encoded values use 8 bytes in this format::
+Type ``DTZ`` (date + time + time zone)
+""""""""""""""""""""""""""""""""""""""
 
-    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
-    TTTTTTTT TTSSSSSS SSSSSSSS SSSSSS00
+The *type tag* is ``110``. Encoded values use 6 bytes in this format::
 
-  For nanosecond (ns) precision, encoded values use 9 bytes in this format::
+    110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT
+    TTTTTTTT TZZZZZZZ
 
-    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
-    TTTTTTTT TTSSSSSS SSSSSSSS SSSSSSSS
-    SSSSSSSS
+Note that the ``D`` and ``T`` components must be in UTC format.
 
-  In case the sub-second precision component has no value, encoded values use 6
-  bytes in this format::
+Type ``DTS`` (date + time with sub-second precision)
+""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
-    TTTTTTTT TT000000
+The *type tag* is ``01``, followed by the precision tag ``P``.
+Values are zero-padded on the right up to the first byte boundary.
 
-* **Date + time (with sub-second precision) + time zone** (``DTSZ``)
+For millisecond (ms) precision, encoded values use 7 bytes in this format::
 
-  The *type tag* is ``111``, followed by the precision tag ``P``.
-  Values are zero-padded on the right up to the first byte boundary.
+  01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+  TTTTTTTT TTSSSSSS SSSS0000
 
-  Note that the ``D`` and ``T`` components must be in UTC format.
+For microsecond (µs) precision, encoded values use 8 bytes in this format::
 
-  For millisecond (ms) precision, encoded values use 8 bytes in this format::
+  01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+  TTTTTTTT TTSSSSSS SSSSSSSS SSSSSS00
 
-    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
-    TTTTTTTT TTTSSSSS SSSSSZZZ ZZZZ0000
+For nanosecond (ns) precision, encoded values use 9 bytes in this format::
 
-  For microsecond (µs) precision, encoded values use 9 bytes in this format::
+  01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+  TTTTTTTT TTSSSSSS SSSSSSSS SSSSSSSS
+  SSSSSSSS
 
-    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
-    TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSZ
-    ZZZZZZ00
+In case the sub-second precision component has no value, encoded values use 6
+bytes in this format::
 
-  For nanosecond (ns) precision, encoded values use 10 bytes in this format::
+  01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+  TTTTTTTT TT000000
 
-    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
-    TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSS
-    SSSSSSSS SZZZZZZZ
+Type ``DTSZ`` (date + time with sub-second precision + time zone)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-  In case the sub-second precision component has no value, encoded values use 7
-  bytes in this format::
+The *type tag* is ``111``, followed by the precision tag ``P``.
+Values are zero-padded on the right up to the first byte boundary.
 
-    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
-    TTTTTTTT TTTZZZZZ ZZ000000
+Note that the ``D`` and ``T`` components must be in UTC format.
+
+For millisecond (ms) precision, encoded values use 8 bytes in this format::
+
+  111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+  TTTTTTTT TTTSSSSS SSSSSZZZ ZZZZ0000
+
+For microsecond (µs) precision, encoded values use 9 bytes in this format::
+
+  111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+  TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSZ
+  ZZZZZZ00
+
+For nanosecond (ns) precision, encoded values use 10 bytes in this format::
+
+  111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+  TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSS
+  SSSSSSSS SZZZZZZZ
+
+In case the sub-second precision component has no value, encoded values use 7
+bytes in this format::
+
+  111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+  TTTTTTTT TTTZZZZZ ZZ000000
 
 
 Examples
