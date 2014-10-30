@@ -131,7 +131,7 @@ def transform_spec(source):
 
 @app.route('/')
 def index():
-    with open('README.rst') as fp:
+    with open('temporenc.rst') as fp:
         source = fp.read()
     context = transform_spec(source)
     return render_template('index.html', **context)
