@@ -4,7 +4,6 @@ import io
 
 from docutils.core import publish_parts
 from flask import Flask, Markup, render_template
-# from flask.ext.frozen import Freezer
 from lxml import etree
 
 
@@ -126,7 +125,6 @@ def transform_spec(source):
         title=parts['title'],
         subtitle=parts['subtitle'],
         features_short=features,
-        # body=text,
         sections=sections,
     )
 
