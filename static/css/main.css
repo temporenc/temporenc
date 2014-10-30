@@ -203,18 +203,9 @@ pre, tt {
     background: #f8f8f8;
     font-family: "Monaco", "DejaVu Sans Mono", monospace;
     color: #666;
-}
-
-pre {
-    border: none;
-    padding: 20px;
-    font-size: 16px;
-    line-height: 28px;
-}
-
-tt {
     padding: 2px 4px;
     font-size: 75%;
+    border: none;
 }
 
 small {
