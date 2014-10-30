@@ -501,13 +501,14 @@ c9 91 00`` (hex bytes).
 Implementations
 ===============
 
-* Python library for *temporenc*: `PyPI page
-  <https://pypi.python.org/pypi/temporenc>`_, `documentation
-  <http://temporenc.readthedocs.org/>`_, and `source code
-  <https://github.com/wbolster/temporenc-python>`_
-
-
 Implementations for other languages are most welcome!
+
+Python
+------
+
+A Python library for *temporenc*, conveniently named *temporenc*, is available
+from `PyPI <https://pypi.python.org/pypi/temporenc>`_. The `online documentation
+<http://temporenc.readthedocs.org/>`_ is a good place to start.
 
 
 Questions and answers
