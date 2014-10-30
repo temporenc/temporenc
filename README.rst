@@ -571,11 +571,12 @@ Questions and answers
 
 * Who came up with this format?
 
-  *Temporenc* was created by `Wouter Bolsterlee
-  <https://github.com/wbolster/>`_.
+  *Temporenc* was created by `Wouter Bolsterlee <http://uwstopia.nl/>`_. I'm
+  `wbolster <https://github.com/wbolster/>`_ on Github (star my repositories!),
+  and `@wbolster <https://twitter.com/wbolster>`_ on Twitter (follow me!).
 
 * How can I contribute to *temporenc*?
 
-  *Temporenc* is maintained in the `temporenc repository
-  <https://github.com/wbolster/temporenc>`_ on Github. Do get in touch if you
-  feel like it!
+  By using it! The *temporenc* specification itself is maintained in the
+  `temporenc repository <https://github.com/wbolster/temporenc>`_ on Github. Do
+  get in touch if you feel like it!
