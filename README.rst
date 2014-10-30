@@ -283,9 +283,17 @@ properly, regardless of their time zone.
 
 *Temporenc* uses UTC offsets (usually written as ±HH:MM) to represent time zone
 information. The UTC offset is expressed as the number of 15 minute increments
-from UTC, with the constant 64 added to it to produce a positive integer in the
-range 0–126 (both inclusive), i.e. ``(offset_in_minutes / 15) + 64``. The
-special value 127 means no value is set.
+from UTC, with the constant 64 added to it to produce a positive integer, i.e.
+``(offset_in_minutes / 15) + 64``. The resulting number must be in the range
+0–125 (both inclusive). The special value 127 means no value is set.
+
+The special value 126 means that this value does carry time zone information,
+but that it is not expressed as an embedded UTC offset. This makes it possible
+to use more elaborate time zone handling with *temporenc* values, for example
+using geographical identifiers from the `tzdata
+<http://en.wikipedia.org/wiki/Tz_database>`_ project. The actual inclusion of
+additional time zone information is outside the scope of *temporenc*; the value
+126 is just an indicator that time zone information is handled externally.
 
 Examples:
 
