@@ -41,36 +41,44 @@ provides a low level building block for higher level protocols and file formats.
 
 *Temporenc* only deals with the encoding of date and time related information,
 and is designed for embedding into other encoding schemes. The only requirement
-is that embedding formats have support for arbitrary (byte) strings. This makes
+is that embedding formats have support for arbitrary byte strings. This makes
 *temporenc* a perfect companion for encoding schemes that encode arbitrary data
 structures but lack a flexible date/time type (if any), such as `MessagePack
 <http://msgpack.org/>`_, `Protocol Buffers
-<https://developers.google.com/protocol-buffers/>`_, or `Thrift
-<https://thrift.apache.org/>`_. *Temporenc* is also a good fit for (partial)
-keys in key-value stores.
+<https://developers.google.com/protocol-buffers/>`_, and `Thrift
+<https://thrift.apache.org/>`_. Due to its compactness and ordering properties,
+*temporenc* is also a perfect fit for (partial) keys in key/value stores.
 
-**Temporenc is flexible.** The format is very flexible and supports any
-combination of a date, a time, and a time zone. Within each of these components,
-each field is also optional, e.g. it is possible to encode a year and a month
-without a day. Times can have sub-second precision using either milliseconds,
-microseconds, or nanoseconds. Time zones use an UTC offset with 15 minute
-granularity, allowing any time zone in use in the world to be represented.
+Temporenc is flexible
+---------------------
 
-**Temporenc is compact.** *Temporenc* values have a variable size between 3 and
-10 bytes, depending on the components being included. Values of the same type
-always have the same size. For example, an encoded date uses 3 bytes, an encoded
-time also takes 3 bytes, and an encoded date with time uses 5 bytes. At the
-other extreme, it takes only 10 bytes to encode a date with time using
-nanosecond precision and a time zone.
+The format is very flexible and supports any combination of a date, a time, and
+a time zone. Within each of these components, each field is also optional, e.g.
+it is possible to encode a year and a month without a day. Times can have
+sub-second precision using either milliseconds, microseconds, or nanoseconds.
+Time zones use an UTC offset with 15 minute granularity, allowing any time zone
+in use in the world to be represented.
 
-**Temporenc is machine-friendly.** *Temporenc* values are self-describing;
-consuming applications do not need to know which format was used for encoding.
-Since all information needed for decoding can be derived from the first byte,
-values can be read from streams without framing. Encoded values of the same type
-can be sorted using normal lexicographical sorting routines, i.e. without
-decoding. Earlier dates sort first, missing values sort last. This makes
-*temporenc* values very suited for use in search trees or as as (partial) keys
-in key/value stores.
+Temporenc is compact
+--------------------
+
+*Temporenc* values have a variable size between 3 and 10 bytes, depending on the
+components being included. Values of the same type (and precision) always have
+the same size. For example, an encoded date uses 3 bytes, an encoded time also
+takes 3 bytes, and an encoded date with time uses 5 bytes. At the other extreme,
+it takes only 10 bytes to encode a date with time using nanosecond precision and
+a time zone.
+
+Temporenc is machine-friendly
+-----------------------------
+
+*Temporenc* values are self-describing; consuming applications do not need to
+know which variant was used for encoding. Since all information needed for
+decoding can be derived from the first byte, values can be read from streams
+without framing. Encoded values of the same type (and precision) can be sorted
+using normal lexicographical sorting routines, i.e. without decoding. Earlier
+dates sort first, missing values sort last. This makes *temporenc* values very
+suited for use in search trees or as as (partial) keys in key/value stores.
 
 
 Conceptual model
@@ -81,7 +89,7 @@ specification defines four **components**, each representing a single aspect of
 the *temporenc* date/time model:
 
 * Component ``D`` (date)
-  
+
   This component contains year, month, and day information. Each field is
   optional.
 
@@ -93,7 +101,7 @@ the *temporenc* date/time model:
 * Component ``S`` (sub-second precision)
 
   This is a refinement to the time component that allows for a more precise time
-  representation, expresses as either milliseconds, microseconds, or
+  representation, expressed as either milliseconds, microseconds, or
   nanoseconds.
 
 * Component ``Z`` (time zone)
@@ -107,28 +115,28 @@ a particular combination of date, time, sub-second time precision, and time zone
 information:
 
 * Type ``D``
-  
+
   Date only, encoded as 3 bytes.
 
 * Type ``T``
-  
+
   Time only, encoded as 3 bytes.
 
 * Type ``DT``
-  
+
   Date + time, encoded as 5 bytes.
 
 * Type ``DTZ``
-  
+
   Date + time + time zone, encoded as 6 bytes.
 
 * Type ``DTS``
-  
+
   Date + time with sub-second precision, encoded as 6–9 bytes (precision
   dependent).
 
 * Type ``DTSZ``
-  
+
   Date + time with sub-second precision + time zone, encoded as 7–10 bytes
   (precision dependent).
 
@@ -253,7 +261,7 @@ other components, this component uses a variable number of bits, indicated by a
   An integer in the range 0–999999999 (both inclusive) represented as 30 bits.
   The precision tag ``P`` is ``10``.
 
-* No sub-second precision (0 bits value, 2 bits tag, 2 bits in total)
+* Empty sub-second precision (0 bits value, 2 bits tag, 2 bits in total)
 
   The precision tag ``P`` is ``11``, and no additional information is encoded.
   Note that if no sub-second precision time component is required, using a
@@ -322,7 +330,8 @@ byte of the encoded value. The advantages of this approach are:
 
 * The total size of encoded values is very small.
 
-* Encoded values of the same *type* can be sorted lexicographically.
+* Encoded values of the same *type* (and precision) can be sorted
+  lexicographically.
 
 * A decoder needs only the first byte to determine the total size and layout of
   the complete value, which allows for decoding values from a stream without the
@@ -396,7 +405,8 @@ Example: *1983-01-15T18:25:12* is encoded as ``00011110 11111100 00011101
 Type ``DTZ`` (date + time + time zone)
 """"""""""""""""""""""""""""""""""""""
 
-The *type tag* is ``110``. Encoded values use 6 bytes in this format::
+The *type tag* is ``110``.
+Encoded values use 6 bytes in this format::
 
   110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT
   TTTTTTTT TZZZZZZZ
@@ -412,90 +422,89 @@ Type ``DTS`` (date + time with sub-second precision)
 The *type tag* is ``01``, followed by the precision tag ``P``.
 Values are zero-padded on the right up to the first byte boundary.
 
-For millisecond (ms) precision, encoded values use 7 bytes in this format::
+* For millisecond (ms) precision, encoded values use 7 bytes in this format::
 
-  01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
-  TTTTTTTT TTSSSSSS SSSS0000
+    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+    TTTTTTTT TTSSSSSS SSSS0000
 
-For microsecond (µs) precision, encoded values use 8 bytes in this format::
+  Example: *1983-01-15T18:25:12.123* (millisecond precision) is encoded as
+  ``01000111 10111111 00000111 01001001 10010011 00000111 10110000`` (bits) or
+  ``47 bf 07 49 93 07 b0`` (hex bytes).
 
-  01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
-  TTTTTTTT TTSSSSSS SSSSSSSS SSSSSS00
+* For microsecond (µs) precision, encoded values use 8 bytes in this format::
 
-For nanosecond (ns) precision, encoded values use 9 bytes in this format::
+    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+    TTTTTTTT TTSSSSSS SSSSSSSS SSSSSS00
 
-  01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
-  TTTTTTTT TTSSSSSS SSSSSSSS SSSSSSSS
-  SSSSSSSS
+  Example: *1983-01-15T18:25:12.123456* (microsecond precision) is encoded as
+  ``01010111 10111111 00000111 01001001 10010011 00000111 10001001 00000000``
+  (bits) or ``57 bf 07 49 93 07 89 00`` (hex bytes).
 
-In case the sub-second precision component has no value, encoded values use 6
-bytes in this format::
+* For nanosecond (ns) precision, encoded values use 9 bytes in this format::
 
-  01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
-  TTTTTTTT TT000000
+    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+    TTTTTTTT TTSSSSSS SSSSSSSS SSSSSSSS
+    SSSSSSSS
 
-Example: *1983-01-15T18:25:12.123* (millisecond precision) is encoded as
-``01000111 10111111 00000111 01001001 10010011 00000111 10110000`` (bits) or
-``47 bf 07 49 93 07 b0`` (hex bytes).
+  Example: *1983-01-15T18:25:12.123456789* (nanosecond precision) is encoded as
+  ``01100111 10111111 00000111 01001001 10010011 00000111 01011011 11001101
+  00010101`` (bits) or ``67 bf 07 49 93 07 5b cd 15`` (hex bytes).
 
-Example: *1983-01-15T18:25:12.123456* (microsecond precision) is encoded as
-``01010111 10111111 00000111 01001001 10010011 00000111 10001001 00000000``
-(bits) or ``57 bf 07 49 93 07 89 00`` (hex bytes).
+* In case the sub-second precision component has no value, encoded values use 6
+  bytes in this format::
 
-Example: *1983-01-15T18:25:12.123456789* (nanosecond precision) is encoded as
-``01100111 10111111 00000111 01001001 10010011 00000111 01011011 11001101
-00010101`` (bits) or ``67 bf 07 49 93 07 5b cd 15`` (hex bytes).
+    01PPDDDD DDDDDDDD DDDDDDDD DTTTTTTT
+    TTTTTTTT TT000000
 
-Example: *1983-01-15T18:25:12* (no precision) is encoded as ``01110111 10111111
-00000111 01001001 10010011 00000000`` (bits) or ``77 bf 07 49 93 00`` (hex
-bytes).
+  Example: *1983-01-15T18:25:12* (no precision) is encoded as ``01110111
+  10111111 00000111 01001001 10010011 00000000`` (bits) or ``77 bf 07 49 93 00``
+  (hex bytes).
 
 Type ``DTSZ`` (date + time with sub-second precision + time zone)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 The *type tag* is ``111``, followed by the precision tag ``P``.
 Values are zero-padded on the right up to the first byte boundary.
-
 Note that the ``D`` and ``T`` components must be stored as UTC.
 
-For millisecond (ms) precision, encoded values use 8 bytes in this format::
+* For millisecond (ms) precision, encoded values use 8 bytes in this format::
 
-  111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
-  TTTTTTTT TTTSSSSS SSSSSZZZ ZZZZ0000
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+    TTTTTTTT TTTSSSSS SSSSSZZZ ZZZZ0000
 
-For microsecond (µs) precision, encoded values use 9 bytes in this format::
+  Example: *1983-01-15T18:25:12.123+01:00* (millisecond precision) is encoded as
+  ``11100011 11011111 10000011 10100010 11001001 10000011 11011100 01000000``
+  (bits) or ``e3 df 83 a2 c9 83 dc 40`` (hex bytes).
+  
+* For microsecond (µs) precision, encoded values use 9 bytes in this format::
 
-  111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
-  TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSZ
-  ZZZZZZ00
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+    TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSZ
+    ZZZZZZ00
 
-For nanosecond (ns) precision, encoded values use 10 bytes in this format::
+  Example: *1983-01-15T18:25:12.123456+01:00* (microsecond precision) is encoded
+  as ``11101011 11011111 10000011 10100010 11001001 10000011 11000100 10000001
+  00010000`` (bits) or ``eb df 83 a2 c9 83 c4 81 10`` (hex bytes).
 
-  111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
-  TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSS
-  SSSSSSSS SZZZZZZZ
+* For nanosecond (ns) precision, encoded values use 10 bytes in this format::
 
-In case the sub-second precision component has no value, encoded values use 7
-bytes in this format::
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+    TTTTTTTT TTTSSSSS SSSSSSSS SSSSSSSS
+    SSSSSSSS SZZZZZZZ
 
-  111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
-  TTTTTTTT TTTZZZZZ ZZ000000
+  Example: *1983-01-15T18:25:12.123456789+01:00* (nanosecond precision) is encoded
+  as ``11110011 11011111 10000011 10100010 11001001 10000011 10101101 11100110
+  10001010 11000100`` (bits) or ``f3 df 83 a2 c9 83 ad e6 8a c4`` (hex bytes).
 
-Example: *1983-01-15T18:25:12.123+01:00* (millisecond precision) is encoded as
-``11100011 11011111 10000011 10100010 11001001 10000011 11011100 01000000``
-(bits) or ``e3 df 83 a2 c9 83 dc 40`` (hex bytes).
+* In case the sub-second precision component has no value, encoded values use 7
+  bytes in this format::
 
-Example: *1983-01-15T18:25:12.123456+01:00* (microsecond precision) is encoded
-as ``11101011 11011111 10000011 10100010 11001001 10000011 11000100 10000001
-00010000`` (bits) or ``eb df 83 a2 c9 83 c4 81 10`` (hex bytes).
+    111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
+    TTTTTTTT TTTZZZZZ ZZ000000
 
-Example: *1983-01-15T18:25:12.123456789+01:00* (nanosecond precision) is encoded
-as ``11110011 11011111 10000011 10100010 11001001 10000011 10101101 11100110
-10001010 11000100`` (bits) or ``f3 df 83 a2 c9 83 ad e6 8a c4`` (hex bytes).
-
-Example: *1983-01-15T18:25:12+01:00* (no precision) is encoded as ``11111011
-11011111 10000011 10100100 11001001 10010001 00000000`` (bits) or ``fb df 83 a2
-c9 91 00`` (hex bytes).
+  Example: *1983-01-15T18:25:12+01:00* (no precision) is encoded as ``11111011
+  11011111 10000011 10100100 11001001 10010001 00000000`` (bits) or ``fb df 83 a2
+  c9 91 00`` (hex bytes).
 
 
 Implementations
