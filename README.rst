@@ -512,6 +512,18 @@ Questions and answers
   *temporenc* should only be capitalized when normal spelling rules dictate so,
   e.g. at the start of a sentence.
 
+* What's so novel about *temporenc*?
+
+  Not much. Many ancient civilizations had their methods for representing dates
+  and times, and digital schemes for doing the same have been around for
+  decades.
+
+  *Temporenc* is just an attempt to cleverly combine what others have been doing
+  for a very long time. *Temporenc* uses common bit packing techniques and
+  builds upon international standards for representing dates, times, and time
+  zones. All *temporenc* is about is combining existing ideas into a
+  comprehensive encoding format.
+
 * Why another format when there are already so many of them?
 
   Indeed, there are many (semi-)standardized formats to represent dates and
@@ -528,25 +540,22 @@ Questions and answers
   *Temporenc* provides just a different trade-off that favours encoded space and
   flexibility over human readability and parsing convenience.
 
-* What's so novel about *temporenc*?
+* Is *temporenc* just a binary ISO 8601 representation?
 
-  Not much, to be honest.
-
-  Many ancient civilizations had their methods for representing dates and times,
-  and digital schemes for doing the same have been around for decades.
-
-  *temporenc* is just an attempt to cleverly combine what others have been doing
-  for a very long time. *temporenc* uses common bit packing techniques and
-  builds upon international standards for representing dates, times, and time
-  zones. All *temporenc* is about is combining existing ideas into a
-  comprehensive encoding format.
+  Yes and no. ISO 8601 is a very extensive standard that defines many string
+  representations. The *temporenc* *type* ``DTSZ`` is conceptually similar to
+  the canonical string format in ISO 8601, but differs in two important ways.
+  First, *temporenc* allows any field to be empty (instead of only the least
+  significant fields). Second, *temporenc* always uses UTC for time zone aware
+  values, so you cannot blindly translate one into the other without date
+  arithmetic.
 
 * Why does *temporenc* use so many variable-sized components?
 
   The *type tags* and packing formats are designed to minimize the size of the
-  final encoded byte string. For example, by using a 2-bit *type tag* for ``DT``
-  values (date with time), the 38 bits required for representing the actual date
-  and time fit exactly into 5 bytes.
+  encoded byte string. For example, by using a 2-bit *type tag* for ``DT``
+  values (date with time), the space required for representing the actual date
+  (21 bits) and time (17 bits) fit exactly into 5 bytes (2 + 38 = 40 bits).
 
 * How does *temporenc* relate to other serialization formats like *MessagePack*,
   *Thrift*, or *Protocol buffers*?
