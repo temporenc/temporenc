@@ -1,4 +1,4 @@
-!function ($) {
+(function ($) {
 	//=================================== scroll  ===================================//
 
 $body.scrollspy({
@@ -13,6 +13,5 @@ $body.scrollspy({
     $('#navbar-main [href=#]').click(function (e) {
       e.preventDefault()
     })
-
 
 });
