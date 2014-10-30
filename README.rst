@@ -510,14 +510,17 @@ Note that the ``D`` and ``T`` components must be stored as UTC.
 Implementations
 ===============
 
-Implementations for other languages are most welcome!
-
 Python
 ------
 
 A Python library for *temporenc*, conveniently named *temporenc*, is available
 from `PyPI <https://pypi.python.org/pypi/temporenc>`_. The `online documentation
 <http://temporenc.readthedocs.org/>`_ is a good place to start.
+
+Other languages
+---------------
+
+Implementations for other languages are most welcome!
 
 
 Questions and answers
