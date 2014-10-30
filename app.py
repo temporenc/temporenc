@@ -140,7 +140,4 @@ def index():
 
 
 if __name__ == '__main__':
-    # freezer = Freezer(app)
-    # freezer.freeze()
-
     app.run(host='0', debug=True)
