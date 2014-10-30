@@ -1,5 +1,5 @@
 =========
-temporenc
+Temporenc
 =========
 
 comprehensive binary encoding format for dates and times
