@@ -78,7 +78,7 @@ decoding can be derived from the first byte, values can be read from streams
 without framing. Encoded values of the same type (and precision) can be sorted
 using normal lexicographical sorting routines, i.e. without decoding. Earlier
 dates sort first, missing values sort last. This makes *temporenc* values very
-suited for use in search trees or as as (partial) keys in key/value stores.
+suited for use in search trees or as (partial) keys in key/value stores.
 
 
 Conceptual model
