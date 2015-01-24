@@ -151,7 +151,7 @@ Applications can use a different *type* to save space, at the cost of reduced
 expressiveness. The types are chosen in such a way that both sub-second
 precision and time zone support are completely optional. By using the correct
 *type* the storage overhead for unused components can be eliminated completely,
-since *temporenc* uses different a packing format for each *type*.
+since *temporenc* uses a different packing format for each *type*.
 
 
 Encoding rules
