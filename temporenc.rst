@@ -12,7 +12,7 @@ Features
 Flexible
 --------
 
-*Temporenc* encodes **any combination of date, time, and time zone**
+*Temporenc* encodes **any combination of date, time, and time zone offset**
 information: year, month, day, hour, minute, second, sub-second precision, and
 UTC offset. **Each field is optional.**
 
@@ -52,22 +52,24 @@ structures but lack a flexible date/time type (if any), such as `MessagePack
 Temporenc is flexible
 ---------------------
 
-The format is very flexible and supports any combination of a date, a time, and
-a time zone. Within each of these components, each field is also optional, e.g.
-it is possible to encode a year and a month without a day. Times can have
-sub-second precision using either milliseconds, microseconds, or nanoseconds.
-Time zones use an UTC offset with 15 minute granularity, allowing any time zone
-in use in the world to be represented.
+The format is very flexible and supports any combination of a date, a
+time, and a time zone offset. Within each of these components, each
+field is also optional, e.g. it is possible to encode a year and a
+month without a day. Times can have sub-second precision using either
+milliseconds, microseconds, or nanoseconds. Time zones use an UTC
+offset with 15 minute granularity, allowing any time zone in use in
+the world to be represented.
 
 Temporenc is compact
 --------------------
 
-*Temporenc* values have a variable size between 3 and 10 bytes, depending on the
-components being included. Values of the same type (and precision) always have
-the same size. For example, an encoded date uses 3 bytes, an encoded time also
-takes 3 bytes, and an encoded date with time uses 5 bytes. At the other extreme,
-it takes only 10 bytes to encode a date with time using nanosecond precision and
-a time zone.
+*Temporenc* values have a variable size between 3 and 10 bytes,
+depending on the components being included. Values of the same type
+(and precision) always have the same size. For example, an encoded
+date uses 3 bytes, an encoded time also takes 3 bytes, and an encoded
+date with time uses 5 bytes. At the other extreme, it takes only 10
+bytes to encode a date with time using nanosecond precision and a time
+zone offset.
 
 Temporenc is machine-friendly
 -----------------------------
@@ -104,15 +106,14 @@ the *temporenc* date/time model:
   representation, expressed as either milliseconds, microseconds, or
   nanoseconds.
 
-* Component ``Z`` (time zone)
+* Component ``Z`` (time zone offset)
 
   This component specifies the UTC offset.
 
-
-The above components can be combined to create a complete date/time value.
-*Temporenc* defines six **types** for common combinations. Each type represents
-a particular combination of date, time, sub-second time precision, and time zone
-information:
+The above components can be combined to create a complete date/time
+value. *Temporenc* defines six **types** for common combinations. Each
+type represents a particular combination of date, time, sub-second
+time precision, and time zone offset information:
 
 * Type ``D``
 
@@ -128,7 +129,7 @@ information:
 
 * Type ``DTZ``
 
-  Date + time + time zone, encoded as 6 bytes.
+  Date + time + time zone offset, encoded as 6 bytes.
 
 * Type ``DTS``
 
@@ -137,7 +138,7 @@ information:
 
 * Type ``DTSZ``
 
-  Date + time with sub-second precision + time zone, encoded as 7–10 bytes
+  Date + time with sub-second precision + time zone offset, encoded as 7–10 bytes
   (precision dependent).
 
 
@@ -280,14 +281,15 @@ none         (not set)    ``11``        (nothing)
 ============ ============ ============= ==================================
 
 
-Time zone component (``Z``)
-"""""""""""""""""""""""""""
+Time zone offset component (``Z``)
+""""""""""""""""""""""""""""""""""
 
-The time zone component (``Z``) always uses 7 bits. When a *temporenc* type with
-a time zone component is used, the date (``D``) and time (``T``) components are
-stored in UTC. This means that implementations *must* convert a date/time value
-to its UTC equivalent first. This ensures that the encoded values can be sorted
-properly, regardless of their time zone.
+The time zone offset component (``Z``) always uses 7 bits. When a
+*temporenc* type with a time zone offset component is used, the date
+(``D``) and time (``T``) components are stored in UTC. This means that
+implementations *must* convert a date/time value to its UTC equivalent
+first. This ensures that the encoded values can be sorted properly,
+regardless of their time zone.
 
 *Temporenc* uses UTC offsets (usually written as ±HH:MM) to represent time zone
 information. The UTC offset is expressed as the number of 15 minute increments
@@ -402,8 +404,8 @@ The *type tag* is ``00``. Encoded values use 5 bytes in this format::
 Example: *1983-01-15T18:25:12* is encoded as ``00011110 11111100 00011101
 00100110 01001100`` (bits) or ``1e fc 1d 26 4c`` (hex bytes).
 
-Type ``DTZ`` (date + time + time zone)
-""""""""""""""""""""""""""""""""""""""
+Type ``DTZ`` (date + time + time zone offset)
+"""""""""""""""""""""""""""""""""""""""""""""
 
 The *type tag* is ``110``.
 Encoded values use 6 bytes in this format::
@@ -460,8 +462,8 @@ Values are zero-padded on the right up to the first byte boundary.
   10111111 00000111 01001001 10010011 00000000`` (bits) or ``77 bf 07 49 93 00``
   (hex bytes).
 
-Type ``DTSZ`` (date + time with sub-second precision + time zone)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Type ``DTSZ`` (date + time with sub-second precision + time zone offset)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 The *type tag* is ``111``, followed by the precision tag ``P``.
 Values are zero-padded on the right up to the first byte boundary.
