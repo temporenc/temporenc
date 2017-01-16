@@ -475,7 +475,7 @@ Note that the ``D`` and ``T`` components must be stored as UTC.
   Example: *1983-01-15T18:25:12.123+01:00* (millisecond precision) is encoded as
   ``11100011 11011111 10000011 10100010 11001001 10000011 11011100 01000000``
   (bits) or ``e3 df 83 a2 c9 83 dc 40`` (hex bytes).
-  
+
 * For microsecond (µs) precision, encoded values use 9 bytes in this format::
 
     111PPDDD DDDDDDDD DDDDDDDD DDTTTTTT
