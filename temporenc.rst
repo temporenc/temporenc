@@ -416,7 +416,7 @@ Encoded values use 6 bytes in this format::
 Note that the ``D`` and ``T`` components must be stored as UTC.
 
 Example: *1983-01-15T18:25:12+01:00* is encoded as ``11001111 01111110 00001110
-10001011 00100110 01000100`` (bits) or ``cf 7e 0e 8b 26 44`` (hex bytes).
+10010011 00100110 01000100`` (bits) or ``cf 7e 0e 93 26 44`` (hex bytes).
 
 Type ``DTS`` (date + time with sub-second precision)
 """"""""""""""""""""""""""""""""""""""""""""""""""""
