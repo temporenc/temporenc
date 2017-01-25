@@ -603,8 +603,8 @@ Questions and answers
 
 * Who came up with this format?
 
-  *Temporenc* was created by `Wouter Bolsterlee <http://uwstopia.nl/>`_. I'm
-  `wbolster <https://github.com/wbolster/>`_ on Github (star my repositories!),
+  *Temporenc* was created by `Wouter Bolsterlee <http://wouter.bolsterl.ee/>`_.
+  I'm `wbolster <https://github.com/wbolster/>`_ on Github (star my repositories!),
   and `@wbolster <https://twitter.com/wbolster>`_ on Twitter (follow me!).
 
 * How can I contribute to *temporenc*?
