@@ -561,11 +561,12 @@ Questions and answers
   strings (a very extensive ISO standard with many different string formats),
   and SQL ``DATETIME`` strings.
 
-  Each of these formats, including *temporenc*, have their own strengths and
-  weaknesses. Some formats allow for missing values (e.g. *temporenc*), while
-  others do not (e.g. Unix time). Some can represent leap seconds (e.g.
-  ISO 8601) , while others cannot (e.g. Unix time). Some are human readable
-  (e.g. ISO 8601), some are not (e.g. *temporenc*).
+  Each of these formats, including *temporenc*, have their own
+  strengths and weaknesses. Some formats allow for missing values
+  (e.g. *temporenc*), while others do not (e.g. Unix time). Some can
+  represent leap seconds (e.g. ISO 8601, *temporenc*) , while others
+  cannot (e.g. Unix time). Some are human readable (e.g. ISO 8601),
+  some are not (e.g. *temporenc*, Unix time).
 
   *Temporenc* provides just a different trade-off that favours encoded space and
   flexibility over human readability and parsing convenience.
@@ -582,10 +583,11 @@ Questions and answers
 
 * Why does *temporenc* use so many variable-sized components?
 
-  The *type tags* and packing formats are designed to minimize the size of the
-  encoded byte string. For example, by using a 2-bit *type tag* for ``DT``
-  values (date with time), the space required for representing the actual date
-  (21 bits) and time (17 bits) fit exactly into 5 bytes (2 + 38 = 40 bits).
+  The *type tags* and packing formats are designed to minimize the
+  size of the encoded byte string. For example, by using a 2-bit *type
+  tag* for ``DT`` values (date with time), the date (21 bits) and time
+  (17 bits) components can be very densely packed into exactly 5 bytes
+  (2+21+17=40 bits).
 
 * How does *temporenc* relate to other serialization formats like *MessagePack*,
   *Thrift*, or *Protocol buffers*?
