@@ -519,6 +519,13 @@ A Python library for *temporenc*, conveniently named *temporenc*, is available
 from `PyPI <https://pypi.python.org/pypi/temporenc>`_. The `online documentation
 <http://temporenc.readthedocs.org/>`_ is a good place to start.
 
+Rust
+----
+
+A (work in progress) implementation for Rust, named *rust-temporenc*,
+can be found at the `rust-temporenc project page
+<https://bitbucket.org/marshallpierce/rust-temporenc>`_.
+
 Other languages
 ---------------
 
