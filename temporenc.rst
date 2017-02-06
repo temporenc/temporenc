@@ -284,12 +284,7 @@ none         (not set)    ``11``        (nothing)
 Time zone offset component (``Z``)
 """"""""""""""""""""""""""""""""""
 
-The time zone offset component (``Z``) always uses 7 bits. When a
-*temporenc* type with a time zone offset component is used, the date
-(``D``) and time (``T``) components are stored in UTC. This means that
-implementations *must* convert a date/time value to its UTC equivalent
-first. This ensures that the encoded values can be sorted properly,
-regardless of their time zone.
+The time zone offset component (``Z``) always uses 7 bits.
 
 *Temporenc* uses UTC offsets (usually written as ±HH:MM) to represent time zone
 information. The UTC offset is expressed as the number of 15 minute increments
@@ -302,8 +297,9 @@ but that it is not expressed as an embedded UTC offset. This makes it possible
 to use more elaborate time zone handling with *temporenc* values, for example
 using geographical identifiers from the `tzdata
 <http://en.wikipedia.org/wiki/Tz_database>`_ project. The actual inclusion of
-additional time zone information is outside the scope of *temporenc*; the value
-126 is just an indicator that time zone information is handled externally.
+additional time zone information is outside the scope of *temporenc*;
+the value 126 is just an indicator that the value carries a time zone,
+but that that information is not present in the value itself.
 
 Examples:
 
@@ -332,8 +328,12 @@ byte of the encoded value. The advantages of this approach are:
 
 * The total size of encoded values is very small.
 
-* Encoded values of the same *type* (and precision) can be sorted
-  lexicographically.
+* Lexicographical sorting of encoded values of the same type (and
+  precision) results in the same ordering as the natural text-based
+  ordering. This means that mixing values with different UTC offsets
+  will sort based on the literal date and time specified, not the
+  equivalent instant in UTC.
+
 
 * A decoder needs only the first byte to determine the total size and layout of
   the complete value, which allows for decoding values from a stream without the
@@ -413,10 +413,8 @@ Encoded values use 6 bytes in this format::
   110DDDDD DDDDDDDD DDDDDDDD TTTTTTTT
   TTTTTTTT TZZZZZZZ
 
-Note that the ``D`` and ``T`` components must be stored as UTC.
-
 Example: *1983-01-15T18:25:12+01:00* is encoded as ``11001111 01111110 00001110
-10001011 00100110 01000100`` (bits) or ``cf 7e 0e 8b 26 44`` (hex bytes).
+10010011 00100110 01000100`` (bits) or ``cf 7e 0e 93 26 44`` (hex bytes).
 
 Type ``DTS`` (date + time with sub-second precision)
 """"""""""""""""""""""""""""""""""""""""""""""""""""
@@ -467,7 +465,8 @@ Type ``DTSZ`` (date + time with sub-second precision + time zone offset)
 
 The *type tag* is ``111``, followed by the precision tag ``P``.
 Values are zero-padded on the right up to the first byte boundary.
-Note that the ``D`` and ``T`` components must be stored as UTC.
+
+TODO: fix example values to have no utc conversion
 
 * For millisecond (ms) precision, encoded values use 8 bytes in this format::
 
@@ -475,8 +474,8 @@ Note that the ``D`` and ``T`` components must be stored as UTC.
     TTTTTTTT TTTSSSSS SSSSSZZZ ZZZZ0000
 
   Example: *1983-01-15T18:25:12.123+01:00* (millisecond precision) is encoded as
-  ``11100011 11011111 10000011 10100010 11001001 10000011 11011100 01000000``
-  (bits) or ``e3 df 83 a2 c9 83 dc 40`` (hex bytes).
+  ``11100011 11011111 10000011 10100100 11001001 10000011 11011100 01000000``
+  (bits) or ``e3 df 83 a4 c9 83 dc 40`` (hex bytes).
 
 * For microsecond (µs) precision, encoded values use 9 bytes in this format::
 
@@ -485,8 +484,8 @@ Note that the ``D`` and ``T`` components must be stored as UTC.
     ZZZZZZ00
 
   Example: *1983-01-15T18:25:12.123456+01:00* (microsecond precision) is encoded
-  as ``11101011 11011111 10000011 10100010 11001001 10000011 11000100 10000001
-  00010000`` (bits) or ``eb df 83 a2 c9 83 c4 81 10`` (hex bytes).
+  as ``11101011 11011111 10000011 10100100 11001001 10000011 11000100 10000001
+  00010000`` (bits) or ``eb df 83 a4 c9 83 c4 81 10`` (hex bytes).
 
 * For nanosecond (ns) precision, encoded values use 10 bytes in this format::
 
@@ -495,8 +494,8 @@ Note that the ``D`` and ``T`` components must be stored as UTC.
     SSSSSSSS SZZZZZZZ
 
   Example: *1983-01-15T18:25:12.123456789+01:00* (nanosecond precision) is encoded
-  as ``11110011 11011111 10000011 10100010 11001001 10000011 10101101 11100110
-  10001010 11000100`` (bits) or ``f3 df 83 a2 c9 83 ad e6 8a c4`` (hex bytes).
+  as ``11110011 11011111 10000011 10100100 11001001 10000011 10101101 11100110
+  10001010 11000100`` (bits) or ``f3 df 83 a4 c9 83 ad e6 8a c4`` (hex bytes).
 
 * In case the sub-second precision component has no value, encoded values use 7
   bytes in this format::
@@ -505,7 +504,7 @@ Note that the ``D`` and ``T`` components must be stored as UTC.
     TTTTTTTT TTTZZZZZ ZZ000000
 
   Example: *1983-01-15T18:25:12+01:00* (no precision) is encoded as ``11111011
-  11011111 10000011 10100100 11001001 10010001 00000000`` (bits) or ``fb df 83 a2
+  11011111 10000011 10100100 11001001 10010001 00000000`` (bits) or ``fb df 83 a4
   c9 91 00`` (hex bytes).
 
 
@@ -573,13 +572,12 @@ Questions and answers
 
 * Is *temporenc* just a binary ISO 8601 representation?
 
-  Yes and no. ISO 8601 is a very extensive standard that defines many string
-  representations. The *temporenc* *type* ``DTSZ`` is conceptually similar to
-  the canonical string format in ISO 8601, but differs in two important ways.
-  First, *temporenc* allows any field to be empty (instead of only the least
-  significant fields). Second, *temporenc* always uses UTC for time zone aware
-  values, so you cannot blindly translate one into the other without date
-  arithmetic.
+  Yes and no. ISO 8601 is a very extensive standard that defines many
+  string representations. The *temporenc* *type* ``DTSZ`` is
+  conceptually similar to the canonical string format in ISO 8601, but
+  it differs in an important way: *temporenc* allows any field to be
+  empty, while (some profiles of) ISO 8601 allow only the least
+  significant fields to be left empty.
 
 * Why does *temporenc* use so many variable-sized components?
 
